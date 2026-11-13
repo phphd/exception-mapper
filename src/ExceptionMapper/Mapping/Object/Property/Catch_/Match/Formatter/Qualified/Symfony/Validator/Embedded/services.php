@@ -26,6 +26,8 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
                 ->nullOnInvalid(),
         ])
         ->tag(ExceptionMatchFormatter::class, ['id' => ViolationsEmbeddedExceptionFormatter::class])
+        ->tag(ExceptionMatchFormatter::class.'<'.ViolationsEmbeddedException::class.','.ConstraintViolationInterface::class.'>', ['id' => ViolationsEmbeddedExceptionFormatter::class])
+        ->tag(ExceptionMatchFormatter::class.'<'.ValidationFailedException::class.','.ConstraintViolationInterface::class.'>', ['id' => ViolationsEmbeddedExceptionFormatter::class])
     ;
 
     $services->alias(
