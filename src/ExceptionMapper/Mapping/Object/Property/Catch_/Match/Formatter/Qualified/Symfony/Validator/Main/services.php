@@ -29,5 +29,6 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
                 ->nullOnInvalid(),
         ])
         ->tag(ExceptionMatchFormatter::class, ['id' => MainExceptionViolationFormatter::class])
+        ->tag(ExceptionMatchFormatter::class.'<'.Throwable::class.','.ConstraintViolationInterface::class.'>', ['id' => MainExceptionViolationFormatter::class])
     ;
 };
