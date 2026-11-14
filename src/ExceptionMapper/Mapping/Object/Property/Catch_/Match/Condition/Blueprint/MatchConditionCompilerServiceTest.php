@@ -57,7 +57,7 @@ final class MatchConditionCompilerServiceTest extends BundleTestCase
         self::assertSame($expected, $providedServices);
     }
 
-    private function getConditionCompilerRegistry(CompositeMatchConditionCompiler $compiler): ?ContainerInterface // @phpstan-ignore missingType.generics
+    private function getConditionCompilerRegistry(CompositeMatchConditionCompiler $compiler): ContainerInterface // @phpstan-ignore missingType.generics
     {
         $factory = $this->getQualifiedMatchConditionCompiler($compiler);
 
