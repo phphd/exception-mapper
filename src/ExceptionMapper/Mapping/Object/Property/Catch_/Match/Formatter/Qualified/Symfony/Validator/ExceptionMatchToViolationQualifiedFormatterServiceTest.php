@@ -75,7 +75,7 @@ final class ExceptionMatchToViolationQualifiedFormatterServiceTest extends Bundl
     }
 
     /** @param ExceptionMatchQualifiedFormatter<Throwable,mixed> $exceptionMatchFormatter */
-    private function getFormatterRegistry(ExceptionMatchQualifiedFormatter $exceptionMatchFormatter): ?ContainerInterface // @phpstan-ignore missingType.generics
+    private function getFormatterRegistry(ExceptionMatchQualifiedFormatter $exceptionMatchFormatter): ContainerInterface // @phpstan-ignore missingType.generics
     {
         /** @psalm-suppress InternalProperty, InaccessibleProperty, PossiblyNullFunctionCall, PossiblyNullReference */
         return (static fn(): ContainerInterface => $exceptionMatchFormatter->formatterRegistry) // @phpstan-ignore-line
