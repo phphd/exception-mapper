@@ -13,7 +13,6 @@ use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validation;
 use Throwable;
-use Webmozart\Assert\Assert;
 
 use function array_map;
 use function iterator_to_array;
@@ -44,7 +43,6 @@ final class ViolationsEmbeddedExceptionFormatter implements ExceptionMatchFormat
     public function format(ExceptionMatch $exceptionMatch): array
     {
         $exception = $exceptionMatch->getException();
-        Assert::isInstanceOfAny($exception, [ViolationsEmbeddedException::class, ValidationFailedException::class]);
 
         /** @var list<ConstraintViolationInterface> $violationList */
         $violationList = iterator_to_array($exception->getViolations());
