@@ -8,9 +8,9 @@ For example, look at a class with the incorrect mappings:
 class DivideByZeroCommand
 {
     #[Catch_(InvalidUidException::class, match: uid_value)]
-    public int $id;
+    public int $dividend;
 
-    #[Catch_(DivisionByZeroError::class, format: 'bad-formatter')]
+    #[Catch_(DivisionByZeroError::class, format: embedded_violations)]
     public int $divisor = 0;
 }
 ```
@@ -18,16 +18,20 @@ class DivideByZeroCommand
 The linter will report problems:
 
 ```text
--------------------------------------------------------------------------
-src/YourProject/DivideByZeroCommand.php                          
--------------------------------------------------------------------------
- ✏️       App\YourProject\DivideByZeroCommand::$id                     
- [ERROR]  UidValueMatchCondition requires a string property, got: int   
-          ↳ #[Catch_] exception mapping compilation failed.             
+--------------------------------------------------------------------------------------
+src/YourProject/DivideByZeroCommand.php
+--------------------------------------------------------------------------------------
+ ✏️       App\YourProject\DivideByZeroCommand::$dividend
+ [ERROR]  UidValueMatchCondition requires a string property, got: int
+          ↳ #[Catch_] exception mapping compilation failed.
  
- ✏️       App\YourProject\DivideByZeroCommand::$divisor          
- [ERROR]  Exception Match Formatter is not registered: "bad-formatter"   
-          ↳ #[Catch_] exception mapping compilation failed.         
+ ✏️       App\YourProject\DivideByZeroCommand::$divisor
+ [ERROR]  Generic parameter does not take "DivisionByZeroError" type.
+          Allowed types: PhPhD\...\ViolationsEmbeddedException,
+          Symfony\...\ValidationFailedException.
+          ↳ Exception Match Formatter "PhPhD\...\ViolationsEmbeddedExceptionFormatter"
+            does not take the exception type.
+            ↳ #[Catch_] exception mapping compilation failed.
 
  1 class scanned: 2 errors found.
 ```

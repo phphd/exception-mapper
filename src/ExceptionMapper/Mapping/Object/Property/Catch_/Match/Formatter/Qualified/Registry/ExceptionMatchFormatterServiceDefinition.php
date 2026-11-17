@@ -5,24 +5,41 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Registry;
 
 use LogicException;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
+use Symfony\Component\DependencyInjection\Argument\TaggedIteratorArgument;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Webmozart\Assert\Assert;
 
 use function array_filter;
 use function array_keys;
 use function array_map;
 use function array_values;
+use function class_exists;
 use function sprintf;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_iterator;
+
+class_exists(ContainerConfigurator::class);
 
 /** @internal */
 final class ExceptionMatchFormatterServiceDefinition
 {
+    /** @var ?list<ExceptionMatchFormatterClassGenericName> */
+    private ?array $genericFormatterTagClassNames = null;
+
     public function __construct(
         private readonly Definition $definition,
+        private readonly string $formatterId,
         private readonly string $serviceId,
         /** @var null|list<string> */
         private readonly ?array $aliasIds,
     ) {
+    }
+
+    public static function iteratorTag(): TaggedIteratorArgument
+    {
+        return tagged_iterator(ExceptionMatchFormatter::class, 'id');
     }
 
     public function autoconfigureQualifiedTags(): void
@@ -32,11 +49,13 @@ final class ExceptionMatchFormatterServiceDefinition
         }
 
         foreach ($this->genericFormatterServiceClassNames() as $formatterClassName) {
-            $this->autoconfigureQualifiedClassTag($formatterClassName);
+            $this->autoconfigureQualifiedGenericClassTag($formatterClassName);
         }
+
+        $this->genericFormatterTagClassNames = null;
     }
 
-    private function autoconfigureQualifiedClassTag(ExceptionMatchFormatterClassGenericName $formatterClassName): void
+    private function autoconfigureQualifiedGenericClassTag(ExceptionMatchFormatterClassGenericName $formatterClassName): void
     {
         $this->retag(
             $formatterClassName::getBaseClassName(),
@@ -44,8 +63,8 @@ final class ExceptionMatchFormatterServiceDefinition
         );
     }
 
-    /** Used to build a registry's scoped tagged_locator() */
-    public function materializeClassTags(): void
+    /** Used to build a registry's type-scoped tagged_locator() */
+    public function materializeGenericClassTags(): void
     {
         $formatterTagClassNames = $this->genericFormatterTagClassNames();
 
@@ -56,6 +75,29 @@ final class ExceptionMatchFormatterServiceDefinition
         foreach ($formatterTagClassNames as $formatterClassName) {
             $this->materializeClassTag($formatterClassName);
         }
+    }
+
+    public function registerGenericClassNameUnionServiceDefinition(ContainerBuilder $container): void
+    {
+        $container->setDefinition($this->serviceId.'.formatterClassNameUnion', $this->genericFormatterClassNameUnionDefinition());
+    }
+
+    private function genericFormatterClassNameUnionDefinition(): Definition
+    {
+        return (new Definition(ExceptionMatchFormatterClassGenericNameUnion::class, [$this->genericFormatterClassNameDefinitions()]))
+            ->addTag(ExceptionMatchFormatterClassGenericNameUnion::class, ['id' => $this->formatterId])
+        ;
+    }
+
+    /** @return list<Definition> */
+    private function genericFormatterClassNameDefinitions(): array
+    {
+        return array_map(self::formatterClassNameDefinition(...), $this->genericFormatterTagClassNames());
+    }
+
+    private static function formatterClassNameDefinition(ExceptionMatchFormatterClassGenericName $className): Definition
+    {
+        return new Definition($className::class, [$className->getExceptionType(), $className->getResultType()]);
     }
 
     private function materializeClassTag(ExceptionMatchFormatterClassGenericName $formatterClassName): void
@@ -70,7 +112,7 @@ final class ExceptionMatchFormatterServiceDefinition
     /** @return list<ExceptionMatchFormatterClassGenericName> */
     private function genericFormatterTagClassNames(): array
     {
-        return $this->genericFormatterClassNames(array_keys($this->definition->getTags()));
+        return $this->genericFormatterTagClassNames ??= $this->genericFormatterClassNames(array_keys($this->definition->getTags()));
     }
 
     /** @return list<ExceptionMatchFormatterClassGenericName> */

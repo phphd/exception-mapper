@@ -13,6 +13,7 @@ return ECSConfig::configure()
             __DIR__.'/**/services.php',
             // Single-line PSR-3 log context reads better than an expounded array
             __DIR__.'/src/*/*ExceptionMappingCompiler.php',
+            __DIR__.'/**/*ServiceDefinition.php',
         ],
         Symplify\CodingStandard\Fixer\ArrayNotation\ArrayOpenerAndCloserNewlineFixer::class => $shortArrayFiles,
     ]);

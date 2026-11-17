@@ -11,6 +11,7 @@ use PhPhD\ExceptionMapper\Mapping\Linter\Report\Defect\Severity\DefectSeverity;
 use PhPhD\ExceptionMapper\Mapping\Linter\Report\LintReport;
 use PhPhD\ExceptionMapper\Mapping\Linter\Tests\Stub\AbstractTryMessage;
 use PhPhD\ExceptionMapper\Mapping\Linter\Tests\Stub\ChildOfPrivateCatchMessage;
+use PhPhD\ExceptionMapper\Mapping\Linter\Tests\Stub\Invalid\IncompatibleFormatterMessage;
 use PhPhD\ExceptionMapper\Mapping\Linter\Tests\Stub\Invalid\LazilyDiscoveredUnknownMatchConditionMessage;
 use PhPhD\ExceptionMapper\Mapping\Linter\Tests\Stub\Invalid\MissingEnumFromConditionMessage;
 use PhPhD\ExceptionMapper\Mapping\Linter\Tests\Stub\Invalid\UndefinedConstantConditionMessage;
@@ -21,12 +22,15 @@ use PhPhD\ExceptionMapper\Mapping\Linter\Tests\Stub\UnregisteredFormatter;
 use PhPhD\ExceptionMapper\Mapping\Linter\Tests\Stub\UnregisteredFormatterMessage;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Blueprint\Compiler\Exception\CatchAttributeInstantiationFailedException;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Blueprint\Compiler\Exception\CatchExceptionMappingPrintCompilationFailedException;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\ViolationsEmbeddedException;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\ViolationsEmbeddedExceptionFormatter;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Iterable\Tests\Stub\RootObject;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\HandleableMessageStub;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\MessageWithNoTryAttribute;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\NestedHandleableMessage;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\NestedItem;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 /**
  * @internal
@@ -50,6 +54,10 @@ use PHPUnit\Framework\TestCase;
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Blueprint\Compiler\Exception\CatchExceptionMappingPrintCompilationFailedException
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\ExceptionMatchQualifiedFormatter
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\UnregisteredExceptionMatchFormatterException
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Registry\ExceptionMatchFormatterDoesNotTakeExceptionTypeException
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Registry\ExceptionMatchFormatterClassGenericName
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Registry\ExceptionMatchFormatterClassGenericNameUnion
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Registry\GenericParameterDoesNotTakeTypeException
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Composite\CompositeMatchConditionBlueprint
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Composite\MemoizingIteratorAggregate
  */
@@ -73,6 +81,7 @@ final class MappingLinterUnitTest extends TestCase
 
         /** @var MappingLinter<class-string,LintReport> $linter */
         $linter = $container->get(MappingLinter::class.'<class-string,'.LintReport::class.'>');
+
         $this->linter = $linter;
     }
 
@@ -154,6 +163,21 @@ final class MappingLinterUnitTest extends TestCase
         self::assertSame(UnregisteredFormatterMessage::class.'::$divisor', $defect->getLocation()->toReference());
         self::assertSame([
             'Exception Match Formatter is not registered: "'.UnregisteredFormatter::class.'"',
+            '#[Catch_] exception mapping compilation failed.',
+        ], $defect->getMessages());
+    }
+
+    public function testReportsIncompatibleFormatter(): void
+    {
+        [$classReport] = $this->linter->lint([IncompatibleFormatterMessage::class])->getClassReports();
+
+        [$defect] = $classReport->getDefects();
+
+        self::assertSame(DefectSeverity::Error, $defect->getSeverity());
+        self::assertSame(IncompatibleFormatterMessage::class.'::$divisor', $defect->getLocation()->toReference());
+        self::assertSame([
+            'Generic parameter does not take "DivisionByZeroError" type. Allowed types: '.ViolationsEmbeddedException::class.', '.ValidationFailedException::class.'.',
+            'Exception Match Formatter "'.ViolationsEmbeddedExceptionFormatter::class.'" does not take the exception type.',
             '#[Catch_] exception mapping compilation failed.',
         ], $defect->getMessages());
     }

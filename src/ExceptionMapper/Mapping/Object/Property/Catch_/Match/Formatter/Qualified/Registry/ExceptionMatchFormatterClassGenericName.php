@@ -9,6 +9,7 @@ use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Excepti
 use Throwable;
 use Webmozart\Assert\Assert;
 
+use function is_a;
 use function preg_match;
 use function preg_quote;
 use function sprintf;
@@ -43,6 +44,23 @@ final class ExceptionMatchFormatterClassGenericName
     public static function isArgumentQualifiedClassName(string $name): bool
     {
         return str_starts_with($name, ExceptionMatchFormatter::class.'<');
+    }
+
+    /** @return class-string<Throwable> */
+    public function getExceptionType(): string
+    {
+        return $this->exceptionType;
+    }
+
+    public function getResultType(): string
+    {
+        return $this->resultType;
+    }
+
+    /** @param class-string<Throwable> $exceptionClass */
+    public function acceptsException(string $exceptionClass): bool
+    {
+        return is_a($exceptionClass, $this->exceptionType, allow_string: true);
     }
 
     public function getArgumentTypesQualifiedClassName(): string
