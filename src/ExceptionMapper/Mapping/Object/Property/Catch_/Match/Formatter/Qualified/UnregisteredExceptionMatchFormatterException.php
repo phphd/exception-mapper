@@ -8,6 +8,7 @@ use LogicException;
 
 use function sprintf;
 
+/** @internal */
 final class UnregisteredExceptionMatchFormatterException extends LogicException
 {
     /** @param class-string $formatterId */

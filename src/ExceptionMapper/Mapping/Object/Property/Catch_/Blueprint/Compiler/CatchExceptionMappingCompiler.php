@@ -19,6 +19,9 @@ use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Bool\Fa
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Composite\CompositeMatchConditionBlueprint;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\ExceptionMatchQualifiedFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Registry\ExceptionMatchFormatterClassGenericNameUnion;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Registry\ExceptionMatchFormatterDoesNotTakeExceptionTypeException;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\UnregisteredExceptionMatchFormatterException;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use ReflectionAttribute;
@@ -45,6 +48,8 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
         /** @var MatchConditionCompiler<Throwable> */
         private readonly MatchConditionCompiler $matchConditionCompiler,
         private readonly ContainerInterface $exceptionFormatterRegistry,
+        /** @var ContainerInterface<string,ExceptionMatchFormatterClassGenericNameUnion> */
+        private readonly ContainerInterface $formatterClassGenericNameRegistry,
         private readonly ?LoggerInterface $errorReporter = null,
     ) {
     }
@@ -52,7 +57,7 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
     /** @noinspection PhpUnnecessaryStaticReferenceInspection */
     public function reportingTo(LoggerInterface $reporter): static
     {
-        return new self($this->matchConditionCompiler, $this->exceptionFormatterRegistry, $reporter);
+        return new self($this->matchConditionCompiler, $this->exceptionFormatterRegistry, $this->formatterClassGenericNameRegistry, $reporter);
     }
 
     /** @param ReflectionAttribute<Catch_<Throwable,Throwable>> $reflector */
@@ -148,9 +153,13 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
             return null;
         }
 
-        $formatter = new ExceptionMatchQualifiedFormatter($this->exceptionFormatterRegistry);
+        if (null !== $e = $this->formatterIsNotRegistered($formatterId)) {
+            throw $e;
+        }
 
-        $formatter->getFormatter($formatterId);
+        if (null !== $e = $this->formatterDoesNotTakeExceptionType($formatterId, $catch->getExceptionClass())) {
+            throw $e;
+        }
 
         return $formatterId;
     }
@@ -178,5 +187,39 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
 
             throw $e;
         }
+    }
+
+    /** @param class-string<ExceptionMatchFormatter<Throwable,mixed>> $formatterId */
+    private function formatterIsNotRegistered(string $formatterId): ?UnregisteredExceptionMatchFormatterException
+    {
+        $qualifiedFormatter = new ExceptionMatchQualifiedFormatter($this->exceptionFormatterRegistry);
+
+        try {
+            $qualifiedFormatter->getFormatter($formatterId);
+        } catch (UnregisteredExceptionMatchFormatterException $e) {
+            return $e;
+        }
+
+        return null;
+    }
+
+    private function getFormatterClassGenericNameUnion(string $formatterId): ExceptionMatchFormatterClassGenericNameUnion
+    {
+        return $this->formatterClassGenericNameRegistry->get($formatterId);
+    }
+
+    /**
+     * @param class-string<ExceptionMatchFormatter<Throwable,mixed>> $formatterId
+     * @param class-string<Throwable> $exceptionClass
+     */
+    private function formatterDoesNotTakeExceptionType(string $formatterId, string $exceptionClass): ?ExceptionMatchFormatterDoesNotTakeExceptionTypeException
+    {
+        $formatterClassGenericNameUnion = $this->getFormatterClassGenericNameUnion($formatterId);
+
+        if (null === $doesNotTakeException = $formatterClassGenericNameUnion->doesNotTakeException($exceptionClass)) {
+            return null;
+        }
+
+        return new ExceptionMatchFormatterDoesNotTakeExceptionTypeException($formatterId, $doesNotTakeException);
     }
 }

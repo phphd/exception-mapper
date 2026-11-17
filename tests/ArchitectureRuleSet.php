@@ -31,6 +31,7 @@ use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualifi
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\ExceptionMatch;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Registry\ExceptionMatchFormatterClassGenericName;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Registry\ExceptionMatchFormatterClassGenericNameUnion;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Registry\ExceptionMatchFormatterServiceDefinition;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Path\PropertyPath;
 use PhPhD\ExceptionMapper\Mapping\Object\Try_;
@@ -203,6 +204,8 @@ final class ArchitectureRuleSet
                     Selector::classname(ConstantsClassLoader::class),
                     Selector::classname(MatchConditionCompiler::class),
                     Selector::classname(ExceptionMatchFormatter::class),
+                    Selector::classname(ExceptionMatchFormatterClassGenericName::class),
+                    Selector::classname(ExceptionMatchFormatterClassGenericNameUnion::class),
                     // Bundle & Extension
                     Selector::inNamespace('Symfony\Component'),
                     Selector::classname(InstalledVersions::class),
@@ -329,7 +332,6 @@ final class ArchitectureRuleSet
             Selector::classname(ConstantsAutoloadingClassDiscovery::class),
             Selector::implements(ConstantsAutoloadingClassDiscovery::class),
             Selector::classname(ExceptionMatchFormatterServiceDefinition::class),
-            Selector::classname(ExceptionMatchFormatterClassGenericName::class),
         );
     }
 

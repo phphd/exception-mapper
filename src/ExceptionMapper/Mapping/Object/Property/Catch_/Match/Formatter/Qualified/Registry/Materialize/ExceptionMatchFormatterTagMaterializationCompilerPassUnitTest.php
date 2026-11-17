@@ -6,11 +6,15 @@ namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Q
 
 use LogicException;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Registry\ExceptionMatchFormatterClassGenericName;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Registry\ExceptionMatchFormatterClassGenericNameUnion;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Throwable;
+
+use function array_map;
 
 /**
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Registry\Materialize\ExceptionMatchFormatterTagMaterializationCompilerPass
@@ -21,13 +25,13 @@ use Throwable;
  */
 final class ExceptionMatchFormatterTagMaterializationCompilerPassUnitTest extends TestCase
 {
-    private ExceptionMatchFormatterTagMaterializationCompilerPass $compilerPass;
+    private ExceptionMatchFormatterTagMaterializationCompilerPass $materializationPass;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->compilerPass = new ExceptionMatchFormatterTagMaterializationCompilerPass();
+        $this->materializationPass = new ExceptionMatchFormatterTagMaterializationCompilerPass();
     }
 
     public function testQualifiedFormatterTagIsMaterializedIntoAResultTypeQualifiedFormatterTag(): void
@@ -40,7 +44,7 @@ final class ExceptionMatchFormatterTagMaterializationCompilerPassUnitTest extend
         $container = new ContainerBuilder();
         $container->setDefinition('formatter', $formatterDefinition);
 
-        $this->compilerPass->process($container);
+        $this->materializationPass->process($container);
 
         self::assertSame($initialTags + [
             ExceptionMatchFormatter::class.'<?,string>' => [[]],
@@ -59,7 +63,7 @@ final class ExceptionMatchFormatterTagMaterializationCompilerPassUnitTest extend
         $container = new ContainerBuilder();
         $container->setDefinition('formatter', $formatterDefinition);
 
-        $this->compilerPass->process($container);
+        $this->materializationPass->process($container);
 
         self::assertSame($initialTags + [
             ExceptionMatchFormatter::class.'<?,string>' => [[]],
@@ -79,11 +83,65 @@ final class ExceptionMatchFormatterTagMaterializationCompilerPassUnitTest extend
         $container = new ContainerBuilder();
         $container->setDefinition('formatter', $formatterDefinition);
 
-        $this->compilerPass->process($container);
+        $this->materializationPass->process($container);
 
         self::assertSame($initialTags + [
             ExceptionMatchFormatter::class.'<?,string>' => [$attributes],
         ], $formatterDefinition->getTags());
+    }
+
+    public function testFormatterClassGenericNameUnionServiceIsRegistered(): void
+    {
+        $formatterDefinition = $this->formatterDefinition([
+            ExceptionMatchFormatter::class => [[]],
+            ExceptionMatchFormatter::class.'<'.LogicException::class.',string>' => [[]],
+            ExceptionMatchFormatter::class.'<'.RuntimeException::class.',int>' => [[]],
+        ]);
+
+        $container = new ContainerBuilder();
+        $container->setDefinition('formatter', $formatterDefinition);
+
+        $this->materializationPass->process($container);
+
+        $formatterClassNameUnionDefinition = $container->getDefinition('formatter.formatterClassNameUnion');
+
+        self::assertSame(ExceptionMatchFormatterClassGenericNameUnion::class, $formatterClassNameUnionDefinition->getClass());
+        self::assertFalse($formatterClassNameUnionDefinition->isPublic());
+
+        /** @var list<Definition> $classNameDefinitions */
+        [$classNameDefinitions] = $formatterClassNameUnionDefinition->getArguments();
+
+        self::assertSame([
+            [ExceptionMatchFormatterClassGenericName::class, [LogicException::class, 'string']],
+            [ExceptionMatchFormatterClassGenericName::class, [RuntimeException::class, 'int']],
+        ], array_map(static fn(Definition $definition): array => [$definition->getClass(), $definition->getArguments()], $classNameDefinitions));
+
+        self::assertSame([
+            ExceptionMatchFormatterClassGenericNameUnion::class => [[
+                'id' => 'formatter',
+            ]],
+        ], $formatterClassNameUnionDefinition->getTags());
+    }
+
+    public function testFormatterClassGenericNameUnionServiceIsTaggedWithExplicitlyProvidedFormatterId(): void
+    {
+        $formatterDefinition = $this->formatterDefinition([
+            ExceptionMatchFormatter::class => [[
+                'id' => 'custom',
+            ]],
+            ExceptionMatchFormatter::class.'<'.Throwable::class.',string>' => [[]],
+        ]);
+
+        $container = new ContainerBuilder();
+        $container->setDefinition('formatter', $formatterDefinition);
+
+        $this->materializationPass->process($container);
+
+        self::assertSame([
+            ExceptionMatchFormatterClassGenericNameUnion::class => [[
+                'id' => 'custom',
+            ]],
+        ], $container->getDefinition('formatter.formatterClassNameUnion')->getTags());
     }
 
     public function testMalformedQualifiedFormatterTagIsRejected(): void
@@ -99,7 +157,7 @@ final class ExceptionMatchFormatterTagMaterializationCompilerPassUnitTest extend
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Generic type "'.ExceptionMatchFormatter::class.'<string>" must match "'.ExceptionMatchFormatter::class.'<TException,TResult>" format.');
 
-        $this->compilerPass->process($container);
+        $this->materializationPass->process($container);
     }
 
     public function testFormatterDefinitionWithoutQualifiedFormatterTagIsRejected(): void
@@ -114,7 +172,7 @@ final class ExceptionMatchFormatterTagMaterializationCompilerPassUnitTest extend
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage('Formatter service "formatter" does not specify generic arguments. Define them in #[AsAlias(ExceptionMatchFormatter::class.\'<TException,TResult>\')], specifying your TException and TResult.');
 
-        $this->compilerPass->process($container);
+        $this->materializationPass->process($container);
     }
 
     /** @param array<string,list<array<string,string>>> $tags */

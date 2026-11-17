@@ -5,18 +5,24 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Registry\AutoTag;
 
 use Generator;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Registry\ExceptionMatchFormatterServiceDefinition;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\Compiler\PriorityTaggedServiceTrait;
 use Symfony\Component\DependencyInjection\Compiler\ResolveInstanceofConditionalsPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException;
+use Symfony\Component\DependencyInjection\Reference;
 
+use function array_fill_keys;
 use function array_keys;
+use function array_map;
+use function strval;
 
 /** @internal */
 final class ExceptionMatchFormatterTagAutoconfigurationCompilerPass implements CompilerPassInterface
 {
+    use PriorityTaggedServiceTrait;
+
     /**
      * After {@see ResolveInstanceofConditionalsPass} (100): autoconfigured formatters get a base formatter class tag.
      * Before client's default passes (0): they see (and may adjust) the qualified class tags.
@@ -33,19 +39,29 @@ final class ExceptionMatchFormatterTagAutoconfigurationCompilerPass implements C
     /** @return Generator<ExceptionMatchFormatterServiceDefinition> */
     private function getFormatterServiceDefinitions(ContainerBuilder $container): Generator
     {
-        foreach ($this->getFormattersServicesAliasIds($container) as $formatterServiceId => $aliasIds) {
-            yield new ExceptionMatchFormatterServiceDefinition($container->getDefinition($formatterServiceId), $formatterServiceId, aliasIds: $aliasIds);
+        /** @var array<string,Reference> $formatterServiceReferences */
+        $formatterServiceReferences = $this->findAndSortTaggedServices(ExceptionMatchFormatterServiceDefinition::iteratorTag(), $container);
+
+        $aliasIdsByFormatterServiceId = $this->getAliasIdsByServiceIds($container, array_map(strval(...), $formatterServiceReferences));
+
+        foreach ($formatterServiceReferences as $formatterId => $formatterServiceReference) {
+            yield new ExceptionMatchFormatterServiceDefinition(
+                $container->getDefinition($formatterServiceId = (string)$formatterServiceReference),
+                $formatterId,
+                $formatterServiceId,
+                aliasIds: $aliasIdsByFormatterServiceId[$formatterServiceId],
+            );
         }
     }
 
-    /** @return array<string,list<string>> [own id => alias ids] */
-    private function getFormattersServicesAliasIds(ContainerBuilder $container): array
+    /**
+     * @param array<string> $formatterServiceIds
+     *
+     * @return array<string,list<string>> [service id => alias ids]
+     */
+    private function getAliasIdsByServiceIds(ContainerBuilder $container, array $formatterServiceIds): array
     {
-        $aliasIdsByFormatterServiceId = [];
-
-        foreach (array_keys($container->findTaggedServiceIds(ExceptionMatchFormatter::class)) as $formatterServiceId) {
-            $aliasIdsByFormatterServiceId[$formatterServiceId] = [];
-        }
+        $aliasIdsByFormatterServiceId = array_fill_keys($formatterServiceIds, []);
 
         foreach (array_keys($container->getAliases()) as $aliasId) {
             $formatterServiceId = $this->aliasTarget($container, $aliasId);

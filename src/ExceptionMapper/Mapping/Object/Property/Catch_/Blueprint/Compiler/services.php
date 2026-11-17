@@ -10,6 +10,7 @@ use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Blueprint\CatchExceptio
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Blueprint\Compiler\Autoload\ConstantsClassLoader;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Blueprint\MatchConditionCompiler;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Registry\ExceptionMatchFormatterClassGenericNameUnion;
 use ReflectionAttribute;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Throwable;
@@ -27,6 +28,7 @@ return static function (ContainerConfigurator $configurator): void {
         )
         ->arg('$matchConditionCompiler', service(MatchConditionCompiler::class.'<'.Throwable::class.'>'))
         ->arg('$exceptionFormatterRegistry', tagged_locator(ExceptionMatchFormatter::class, 'id'))
+        ->arg('$formatterClassGenericNameRegistry', tagged_locator(ExceptionMatchFormatterClassGenericNameUnion::class, 'id'))
         // #[Catch_] compilation requires mapping constants loaded
         ->configurator(service(ConstantsClassLoader::class))
     ;
