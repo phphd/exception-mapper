@@ -19,16 +19,20 @@ final class ExceptionMatchFormatterClassGenericName
 {
     private const GENERIC_CLASS_NAME_FORMAT = ExceptionMatchFormatter::class.'<TException,TResult>';
 
-    /** @var array{TException:class-string<Throwable>,TResult:string} */
-    private readonly array $classArguments;
-
     public function __construct(
-        /** A generic formatter class name */
-        string $className,
+        /** @var class-string<Throwable> */
+        private readonly string $exceptionType,
+        private readonly string $resultType,
     ) {
+    }
+
+    public static function fromArgumentQualifiedClassName(string $className): self
+    {
         Assert::true(self::isArgumentQualifiedClassName($className));
 
-        $this->classArguments = self::parseArguments($className);
+        $classArguments = self::parseArguments($className);
+
+        return new self($classArguments['TException'], $classArguments['TResult']);
     }
 
     public static function getBaseClassName(): string
@@ -43,23 +47,12 @@ final class ExceptionMatchFormatterClassGenericName
 
     public function getArgumentTypesQualifiedClassName(): string
     {
-        return ExceptionMatchFormatter::class.'<'.$this->getExceptionType().','.$this->getResultType().'>';
+        return ExceptionMatchFormatter::class.'<'.$this->exceptionType.','.$this->resultType.'>';
     }
 
     public function getResultTypeQualifiedClassName(): string
     {
-        return ExceptionMatchFormatter::class.'<?,'.$this->getResultType().'>';
-    }
-
-    /** @return class-string<Throwable> */
-    public function getExceptionType(): string
-    {
-        return $this->classArguments['TException'];
-    }
-
-    public function getResultType(): string
-    {
-        return $this->classArguments['TResult'];
+        return ExceptionMatchFormatter::class.'<?,'.$this->resultType.'>';
     }
 
     /** @return array{TException:class-string<Throwable>,TResult:string} */

@@ -98,10 +98,7 @@ final class ExceptionMatchFormatterServiceDefinition
         // https://github.com/php/php-src/issues/14003
         $formatterNames = array_filter($names, ExceptionMatchFormatterClassGenericName::isArgumentQualifiedClassName(...));
 
-        return array_values(array_map(
-            static fn(string $name): ExceptionMatchFormatterClassGenericName => new ExceptionMatchFormatterClassGenericName($name),
-            $formatterNames,
-        ));
+        return array_values(array_map(ExceptionMatchFormatterClassGenericName::fromArgumentQualifiedClassName(...), $formatterNames));
     }
 
     private function retag(string $tagName, string $asName): void
