@@ -44,9 +44,7 @@ final class CompositeMatchConditionCompiler implements MatchConditionCompiler
     private function conditionPrints(ReflectionProperty $property, Catch_ $catch): Iterator
     {
         foreach ($this->compilers as $compiler) {
-            $print = $compiler->compile($property, $catch);
-
-            if (null !== $print) {
+            if (null !== $print = $compiler->compile($property, $catch)) {
                 yield $print;
             }
         }

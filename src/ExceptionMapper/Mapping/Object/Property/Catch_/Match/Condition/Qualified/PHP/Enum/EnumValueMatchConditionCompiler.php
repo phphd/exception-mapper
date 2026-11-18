@@ -39,17 +39,56 @@ final class EnumValueMatchConditionCompiler implements MatchConditionCompiler
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         Assert::isAOf($catch->getExceptionClass(), ValueError::class, self::EXCEPTION_TYPE_GUARANTEE_MESSAGE);
 
-        $this->propertyType($property)->assertTakes(self::intOrStringOrMixed(), self::PROPERTY_TYPE_GUARANTEE_MESSAGE);
-
         @[$enumClassName, $fromMethod] = $catch->getFrom(); // @phpstan-ignore offsetAccess.nonArray
 
-        self::assertEnumClass($enumClassName);
-        self::assertEnumFromMethod($enumClassName, $fromMethod);
+        if (null !== $e = self::isNotEnumClass($enumClassName)) {
+            throw $e;
+        }
+
+        if (null !== $e = self::isNotEnumFromMethod($enumClassName, $fromMethod)) {
+            throw $e;
+        }
+
+        if (null !== $e = self::propertyType($property)->doesNotTake(self::intOrStringOrMixed(), self::PROPERTY_TYPE_GUARANTEE_MESSAGE)) {
+            throw $e;
+        }
 
         return new EnumValueMatchConditionBlueprint($enumClassName);
     }
 
-    private function propertyType(ReflectionProperty $property): PropertyType
+    /**
+     * @phpstan-assert-if-false class-string<BackedEnum> $className
+     * @psalm-assert class-string<BackedEnum> $className
+     */
+    private static function isNotEnumClass(?string $className): ?LogicException
+    {
+        if (null !== $className && is_a($className, BackedEnum::class, allow_string: true)) {
+            return null;
+        }
+
+        return new LogicException(sprintf(
+            'EnumValueMatchCondition requires `from:` to contain a class-string of BackedEnum, got: %s',
+            var_export($className, return: true),
+        ));
+    }
+
+    /** @param class-string<BackedEnum> $enumClassName */
+    private static function isNotEnumFromMethod(string $enumClassName, ?string $fromMethod): ?LogicException
+    {
+        if (null === $fromMethod || 'from' === $fromMethod) {
+            return null;
+        }
+
+        $enumReflection = new ReflectionEnum($enumClassName);
+
+        return new LogicException(sprintf(
+            'EnumValueMatchCondition must specify `from: [%1$s::class, \'from\']`, got: `from: [%1$s::class, \'%2$s\']`.',
+            $enumReflection->getShortName(),
+            $fromMethod,
+        ));
+    }
+
+    private static function propertyType(ReflectionProperty $property): PropertyType
     {
         return new PropertyType($property->getType());
     }
@@ -64,32 +103,5 @@ final class EnumValueMatchConditionCompiler implements MatchConditionCompiler
             EnumValueMatchConditionBlueprint::isString(),
             new MixedType(),
         ]);
-    }
-
-    /** @phpstan-assert class-string<BackedEnum> $className */
-    private static function assertEnumClass(?string $className): void
-    {
-        if (null === $className || !is_a($className, BackedEnum::class, allow_string: true)) {
-            throw new LogicException(sprintf(
-                'EnumValueMatchCondition requires `from:` to contain a class-string of BackedEnum, got: %s',
-                var_export($className, return: true),
-            ));
-        }
-    }
-
-    /** @param class-string<BackedEnum> $enumClassName */
-    private static function assertEnumFromMethod(string $enumClassName, ?string $fromMethod): void
-    {
-        if (null === $fromMethod || 'from' === $fromMethod) {
-            return;
-        }
-
-        $enumReflection = new ReflectionEnum($enumClassName);
-
-        throw new LogicException(sprintf(
-            'EnumValueMatchCondition must specify `from: [%1$s::class, \'from\']`, got: `from: [%1$s::class, \'%2$s\']`.',
-            $enumReflection->getShortName(),
-            $fromMethod,
-        ));
     }
 }

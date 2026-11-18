@@ -22,11 +22,13 @@ final class PropertyType
     ) {
     }
 
-    public function assertTakes(TypeSpecification $specification, string $message): void
+    public function doesNotTake(TypeSpecification $specification, string $message): ?LogicException
     {
-        if (!$this->takes($specification)) {
-            throw new LogicException(sprintf($message, (string)$this->type ?: 'mixed')); // @phpstan-ignore ternary.shortNotAllowed
+        if ($this->takes($specification)) {
+            return null;
         }
+
+        return new LogicException(sprintf($message, (string)$this->type ?: 'mixed')); // @phpstan-ignore ternary.shortNotAllowed
     }
 
     public function takes(TypeSpecification $specification): bool
