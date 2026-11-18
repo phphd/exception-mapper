@@ -47,9 +47,9 @@ final class UidValueMatchConditionCompiler implements MatchConditionCompiler
 
     private static function stringOrMixed(): AnyType
     {
-        /** @phpstan-var ?AnyType $stringOrMixed */
         static $stringOrMixed;
 
+        /** @phpstan-var AnyType */
         return $stringOrMixed ??= new AnyType([
             UidValueMatchConditionBlueprint::isString(),
             new MixedType(),

@@ -71,9 +71,9 @@ final class PossiblyExceptionMappedType implements TypeSpecification
 
     private static function isObjectOrIterableOrMixed(): TypeSpecification
     {
-        /** @phpstan-var ?AnyType $mixedTypesSpecification */
         static $mixedTypesSpecification;
 
+        /** @phpstan-var AnyType */
         return $mixedTypesSpecification ??= new AnyType([
             PropertyExceptionMappingBlueprint::isObject(),
             PropertyExceptionMappingBlueprint::isIterable(),

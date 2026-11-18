@@ -124,9 +124,9 @@ final class PropertyExceptionMappingBlueprint implements ExceptionMappingBluepri
 
     public static function isObject(): MixedObjectType
     {
-        /** @phpstan-var MixedObjectType */
         static $isObject = new MixedObjectType();
 
+        /** @phpstan-var MixedObjectType */
         return $isObject;
     }
 
