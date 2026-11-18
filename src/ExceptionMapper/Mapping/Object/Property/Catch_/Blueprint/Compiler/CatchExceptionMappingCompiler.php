@@ -37,18 +37,12 @@ use Webmozart\Assert\Assert;
  */
 final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
 {
-    /**
-     * @template T of ExceptionMatchFormatter<Throwable,mixed>
-     *
-     * @phpstan-param ContainerInterface<class-string<T>,T> $exceptionFormatterRegistry
-     *
-     * @psalm-param ContainerInterface<class-string<ExceptionMatchFormatter>,ExceptionMatchFormatter> $exceptionFormatterRegistry
-     */
     public function __construct(
         /** @var MatchConditionCompiler<Throwable> */
         private readonly MatchConditionCompiler $matchConditionCompiler,
+        /** @var ContainerInterface<class-string<ExceptionMatchFormatter<Throwable,mixed>>,ExceptionMatchFormatter<Throwable,mixed>> */
         private readonly ContainerInterface $exceptionFormatterRegistry,
-        /** @var ContainerInterface<string,ExceptionMatchFormatterClassGenericNameUnion> */
+        /** @var ContainerInterface<class-string<ExceptionMatchFormatter<Throwable,mixed>>,ExceptionMatchFormatterClassGenericNameUnion> */
         private readonly ContainerInterface $formatterClassGenericNameRegistry,
         private readonly ?LoggerInterface $errorReporter = null,
     ) {
@@ -194,18 +188,7 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
     {
         $qualifiedFormatter = new ExceptionMatchQualifiedFormatter($this->exceptionFormatterRegistry);
 
-        try {
-            $qualifiedFormatter->getFormatter($formatterId);
-        } catch (UnregisteredExceptionMatchFormatterException $e) {
-            return $e;
-        }
-
-        return null;
-    }
-
-    private function getFormatterClassGenericNameUnion(string $formatterId): ExceptionMatchFormatterClassGenericNameUnion
-    {
-        return $this->formatterClassGenericNameRegistry->get($formatterId);
+        return $qualifiedFormatter->formatterIsNotRegistered($formatterId);
     }
 
     /**
@@ -221,5 +204,11 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
         }
 
         return new ExceptionMatchFormatterDoesNotTakeExceptionTypeException($formatterId, $doesNotTakeException);
+    }
+
+    /** @param class-string<ExceptionMatchFormatter<Throwable,mixed>> $formatterId */
+    private function getFormatterClassGenericNameUnion(string $formatterId): ExceptionMatchFormatterClassGenericNameUnion
+    {
+        return $this->formatterClassGenericNameRegistry->get($formatterId);
     }
 }

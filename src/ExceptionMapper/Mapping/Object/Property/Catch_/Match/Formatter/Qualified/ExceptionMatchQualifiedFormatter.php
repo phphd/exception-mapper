@@ -23,16 +23,11 @@ use Throwable;
  */
 final class ExceptionMatchQualifiedFormatter implements ExceptionMatchFormatter
 {
-    /**
-     * @api
-     *
-     * @template TFormatter of ExceptionMatchFormatter<TException,TResult>
-     *
-     * @param ContainerInterface<class-string<TFormatter>,TFormatter> $formatterRegistry
-     * @param ?class-string<TFormatter> $defaultFormatter
-     */
+    /** @api */
     public function __construct(
+        /** @var ContainerInterface<class-string<ExceptionMatchFormatter<TException,TResult>>,ExceptionMatchFormatter<TException,TResult>> */
         private readonly ContainerInterface $formatterRegistry,
+        /** @var ?class-string<ExceptionMatchFormatter<TException,TResult>> */
         private readonly ?string $defaultFormatter = null,
     ) {
     }
@@ -47,25 +42,28 @@ final class ExceptionMatchQualifiedFormatter implements ExceptionMatchFormatter
             throw new LogicException('No ExceptionMatchFormatter provided and no default one configured.');
         }
 
-        return $this->getFormatter($formatterId)->format($exceptionMatch); // @phpstan-ignore argument.templateType (that's a fair catch)
+        if (null !== $e = $this->formatterIsNotRegistered($formatterId)) {
+            throw $e;
+        }
+
+        return $this->formatterRegistry->get($formatterId)->format($exceptionMatch);
     }
 
     /**
-     * @template TFormatter of ExceptionMatchFormatter<TException,TResult>
+     * @param class-string<ExceptionMatchFormatter<TException,mixed>> $formatterId
      *
-     * @param class-string<TFormatter> $formatterId
-     *
-     * @return TFormatter
+     * @phpstan-assert-if-false class-string<ExceptionMatchFormatter<TException,TResult>> $formatterId
+     * @psalm-assert class-string<ExceptionMatchFormatter<TException,TResult>> $formatterId
      *
      * @internal
      */
-    public function getFormatter(string $formatterId): ExceptionMatchFormatter
+    public function formatterIsNotRegistered(string $formatterId): ?UnregisteredExceptionMatchFormatterException
     {
-        if (!$this->formatterRegistry->has($formatterId)) {
-            throw new UnregisteredExceptionMatchFormatterException($formatterId);
+        /** @psalm-suppress ArgumentTypeCoercion - that's a fair catch: type must be narrowed */
+        if ($this->formatterRegistry->has($formatterId)) {
+            return null;
         }
 
-        /** @psalm-suppress ArgumentTypeCoercion - Psalm degrades class-string<TFormatter> to class-string */
-        return $this->formatterRegistry->get($formatterId);
+        return new UnregisteredExceptionMatchFormatterException($formatterId);
     }
 }

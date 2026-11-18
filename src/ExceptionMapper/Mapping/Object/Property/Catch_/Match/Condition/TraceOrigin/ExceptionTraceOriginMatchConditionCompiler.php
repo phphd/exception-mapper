@@ -11,11 +11,12 @@ use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Bluepri
 use ReflectionMethod;
 use ReflectionProperty;
 use Throwable;
-use Webmozart\Assert\Assert;
 
+use function class_exists;
 use function count;
 use function explode;
 use function function_exists;
+use function method_exists;
 use function property_exists;
 use function sprintf;
 use function str_starts_with;
@@ -40,44 +41,87 @@ final class ExceptionTraceOriginMatchConditionCompiler implements MatchCondition
 
         @[$originClassName, $originFunctionName] = $origin;
 
-        if (null !== $originClassName) {
-            Assert::classExists($originClassName);
-
-            if (null !== $originFunctionName) {
-                self::assertClassMethodExists($originClassName, $originFunctionName);
-            }
-        } elseif (null !== $originFunctionName) {
-            Assert::true(function_exists($originFunctionName));
-        } else {
-            throw new LogicException('At least one of the originClassName or originFunctionName must be set.');
+        if (null !== $e = self::originDoesNotExist($originClassName, $originFunctionName)) {
+            throw $e;
         }
 
-        /** @psalm-var ?non-empty-string $originFunctionName */
         $condition = new ExceptionTraceOriginMatchCondition($originClassName, $originFunctionName);
 
         return new PreCompiledMatchConditionBlueprint($condition);
     }
 
     /**
+     * @phpstan-assert-if-false ?class-string $originClassName
+     * @phpstan-assert-if-false ?non-empty-string $originFunctionName
+     *
+     * @psalm-assert ?class-string $originClassName
+     * @psalm-assert ?non-empty-string $originFunctionName
+     */
+    private static function originDoesNotExist(?string $originClassName, ?string $originFunctionName): ?LogicException
+    {
+        if (null !== $originClassName) {
+            /** @psalm-suppress ArgumentTypeCoercion ($originClassName is a class-string when classDoesNotExist() returned null) */
+            return self::classDoesNotExist($originClassName)
+                ?? self::classFunctionDoesNotExist($originClassName, $originFunctionName); // @phpstan-ignore argument.type (the same)
+        }
+
+        if (null !== $originFunctionName) {
+            return self::functionDoesNotExist($originFunctionName);
+        }
+
+        return new LogicException('Exception trace origin `from:` must specify at least one of originClassName and originFunctionName.');
+    }
+
+    /**
+     * @phpstan-assert-if-false class-string $originClassName
+     * @psalm-assert class-string $originClassName
+     */
+    private static function classDoesNotExist(string $originClassName): ?LogicException
+    {
+        if (class_exists($originClassName)) {
+            return null;
+        }
+
+        return new LogicException(sprintf('Specified origin class "%s" does not exist.', $originClassName));
+    }
+
+    /**
      * @param class-string $originClassName
      *
-     * @phpstan-assert non-empty-string $originFunctionName
+     * @phpstan-assert-if-false ?non-empty-string $originFunctionName
+     * @psalm-assert ?non-empty-string $originFunctionName
      */
-    private static function assertClassMethodExists(string $originClassName, string $originFunctionName): void
+    private static function classFunctionDoesNotExist(string $originClassName, ?string $originFunctionName): ?LogicException
     {
-        if (self::referencesPropertyHook($originFunctionName)) {
-            Assert::true(
-                self::propertyHookExists($originClassName, $originFunctionName),
-                sprintf('Expected the property hook "%s" to exist on class "%s".', $originFunctionName, $originClassName),
-            );
-        } else {
-            Assert::methodExists($originClassName, $originFunctionName);
+        if (null === $originFunctionName) {
+            return null;
         }
+
+        if (self::referencesPropertyHook($originFunctionName)) {
+            return self::propertyHookDoesNotExist($originClassName, $originFunctionName);
+        }
+
+        return self::methodDoesNotExist($originClassName, $originFunctionName);
     }
 
     private static function referencesPropertyHook(string $functionName): bool
     {
         return str_starts_with($functionName, '$');
+    }
+
+    /**
+     * @param class-string $originClassName
+     *
+     * @phpstan-assert-if-false non-empty-string $originFunctionName
+     * @psalm-assert non-empty-string $originFunctionName
+     */
+    private static function propertyHookDoesNotExist(string $originClassName, string $originFunctionName): ?LogicException
+    {
+        if (self::propertyHookExists($originClassName, $originFunctionName)) {
+            return null;
+        }
+
+        return new LogicException(sprintf('Specified origin property hook "%s::%s" does not exist.', $originClassName, $originFunctionName));
     }
 
     /** @param class-string $className */
@@ -107,5 +151,33 @@ final class ExceptionTraceOriginMatchConditionCompiler implements MatchCondition
         $hooks = $property->getHooks(); // @phpstan-ignore method.notFound (getHooks() is available as of PHP 8.4)
 
         return isset($hooks[$hookName]);
+    }
+
+    /**
+     * @param class-string $originClassName
+     *
+     * @phpstan-assert-if-false non-empty-string $originFunctionName
+     * @psalm-assert non-empty-string $originFunctionName
+     */
+    private static function methodDoesNotExist(string $originClassName, string $originFunctionName): ?LogicException
+    {
+        if (method_exists($originClassName, $originFunctionName)) {
+            return null;
+        }
+
+        return new LogicException(sprintf('Specified origin method "%s::%s()" does not exist.', $originClassName, $originFunctionName));
+    }
+
+    /**
+     * @phpstan-assert-if-false non-empty-string $originFunctionName
+     * @psalm-assert non-empty-string $originFunctionName
+     */
+    private static function functionDoesNotExist(string $originFunctionName): ?LogicException
+    {
+        if (function_exists($originFunctionName)) {
+            return null;
+        }
+
+        return new LogicException(sprintf('Specified origin function "%s" does not exist.', $originFunctionName));
     }
 }
