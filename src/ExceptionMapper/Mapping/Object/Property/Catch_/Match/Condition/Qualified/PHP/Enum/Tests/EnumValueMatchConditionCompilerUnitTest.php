@@ -81,7 +81,7 @@ final class EnumValueMatchConditionCompilerUnitTest extends TestCase
         $property = new ReflectionProperty(ReportDeliveryIssueCommand::class, 'deliveryPriority');
 
         $this->expectException(LogicException::class);
-        $this->expectExceptionMessage('EnumValueMatchCondition requires `from:` to contain a class-string of BackedEnum, got: NULL');
+        $this->expectExceptionMessage('EnumValueMatchCondition requires `from:` to contain a class-string of a BackedEnum, got: NULL');
 
         $compilationException = self::catchException(
             fn() => $this->compile($property),
@@ -99,7 +99,7 @@ final class EnumValueMatchConditionCompilerUnitTest extends TestCase
 
         $this->expectException(LogicException::class);
         $this->expectExceptionMessage(sprintf(
-            'EnumValueMatchCondition requires `from:` to contain a class-string of BackedEnum, got: %s',
+            'EnumValueMatchCondition requires `from:` to contain a class-string of a BackedEnum, got: %s',
             var_export(DeliveryIssue::class, return: true),
         ));
 

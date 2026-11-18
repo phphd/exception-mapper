@@ -67,7 +67,7 @@ final class EnumValueMatchConditionCompiler implements MatchConditionCompiler
         }
 
         return new LogicException(sprintf(
-            'EnumValueMatchCondition requires `from:` to contain a class-string of BackedEnum, got: %s',
+            'EnumValueMatchCondition requires `from:` to contain a class-string of a BackedEnum, got: %s',
             var_export($className, return: true),
         ));
     }
