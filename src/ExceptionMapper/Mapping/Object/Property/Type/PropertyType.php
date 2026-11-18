@@ -22,21 +22,21 @@ final class PropertyType
     ) {
     }
 
-    public function assertIncludes(TypeSpecification $specification, string $message): void
+    public function assertTakes(TypeSpecification $specification, string $message): void
     {
-        if (!$this->includes($specification)) {
+        if (!$this->takes($specification)) {
             throw new LogicException(sprintf($message, (string)$this->type ?: 'mixed')); // @phpstan-ignore ternary.shortNotAllowed
         }
     }
 
-    public function includes(TypeSpecification $specification): bool
+    public function takes(TypeSpecification $specification): bool
     {
-        return $this->namedTypeCovers($specification)
-            ?? $this->compoundTypeIncludes($specification)
+        return $this->namedTypeTakes($specification)
+            ?? $this->compoundTypeTakes($specification)
             ?? $this->isMixed();
     }
 
-    private function namedTypeCovers(TypeSpecification $specification): ?bool
+    private function namedTypeTakes(TypeSpecification $specification): ?bool
     {
         if (!$this->type instanceof ReflectionNamedType) {
             return null;
@@ -45,7 +45,7 @@ final class PropertyType
         return $specification->isSatisfiedBy($this->type);
     }
 
-    private function compoundTypeIncludes(TypeSpecification $specification): ?bool
+    private function compoundTypeTakes(TypeSpecification $specification): ?bool
     {
         if (!$this->type instanceof ReflectionUnionType && !$this->type instanceof ReflectionIntersectionType) {
             return null;
@@ -53,7 +53,7 @@ final class PropertyType
 
         return array_any(
             $this->type->getTypes(),
-            fn(ReflectionType $reflectionType): bool => (new self($reflectionType))->includes($specification),
+            fn(ReflectionType $reflectionType): bool => (new self($reflectionType))->takes($specification),
         );
     }
 

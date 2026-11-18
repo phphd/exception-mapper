@@ -146,7 +146,7 @@ final class ExceptionMapperUnitTest extends TestCase
         self::assertNull($violationList);
     }
 
-    /** @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Type\PropertyType::compoundTypeIncludes */
+    /** @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Type\PropertyType::compoundTypeTakes */
     public function testCaptureNestedObjectPropertyException(): void
     {
         $message = HandleableMessageStub::create()->withNestedObject(new NestedHandleableMessage());

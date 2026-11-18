@@ -32,7 +32,7 @@ final class UidValueMatchConditionCompiler implements MatchConditionCompiler
         /** @phpstan-ignore staticMethod.alreadyNarrowedType */
         Assert::isAOf($catch->getExceptionClass(), InvalidUidException::class, self::EXCEPTION_TYPE_GUARANTEE_MESSAGE);
 
-        $this->propertyType($property)->assertIncludes(self::stringOrMixed(), self::PROPERTY_TYPE_GUARANTEE_MESSAGE);
+        $this->propertyType($property)->assertTakes(self::stringOrMixed(), self::PROPERTY_TYPE_GUARANTEE_MESSAGE);
 
         static $blueprint = new UidValueMatchConditionBlueprint();
 

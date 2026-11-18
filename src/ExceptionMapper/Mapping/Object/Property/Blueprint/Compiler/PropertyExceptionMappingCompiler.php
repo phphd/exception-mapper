@@ -71,7 +71,7 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
         $propertyPrint = new PropertyExceptionMappingBlueprint($property, $catchPrints, $this->printRegistry);
 
         if (!$propertyPrint->hasCatchPrints()
-            && !$this->propertyType($property)->includes($this->possiblyExceptionMappedType)) {
+            && !$this->propertyType($property)->takes($this->possiblyExceptionMappedType)) {
             return null;
         }
 
