@@ -56,9 +56,9 @@ final class EnumValueMatchConditionCompiler implements MatchConditionCompiler
 
     private static function intOrStringOrMixed(): AnyType
     {
-        /** @phpstan-var ?AnyType $intOrStringOrMixed */
         static $intOrStringOrMixed;
 
+        /** @phpstan-var AnyType */
         return $intOrStringOrMixed ??= new AnyType([
             EnumValueMatchConditionBlueprint::isInt(),
             EnumValueMatchConditionBlueprint::isString(),
