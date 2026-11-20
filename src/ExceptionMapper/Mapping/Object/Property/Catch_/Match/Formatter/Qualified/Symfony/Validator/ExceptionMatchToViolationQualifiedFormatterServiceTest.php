@@ -7,6 +7,7 @@ namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Q
 use PhPhD\ExceptionMapper\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\ExceptionMatchQualifiedFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Registry\Container\ChainContainer;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\ViolationsEmbeddedException;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\ViolationsEmbeddedExceptionFormatter;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Violation\ExceptionMatchToViolationFormatter;
@@ -16,7 +17,6 @@ use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualifi
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Tests\Stub\Message\ExceptionMessageFormatterCompilerPass;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
-use Symfony\Component\DependencyInjection\ServiceLocator;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Throwable;
@@ -40,7 +40,8 @@ final class ExceptionMatchToViolationQualifiedFormatterServiceTest extends Bundl
         ];
     }
 
-    public function testViolationFormatter(): void
+    /** @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Registry\Container\ChainContainer::getProvidedServices */
+    public function testViolationFormatters(): void
     {
         $exceptionMatchToViolationQualifiedFormatter = $this->get(ExceptionMatchFormatter::class.'<?,'.ConstraintViolationInterface::class.'>');
         self::assertInstanceOf(ExceptionMatchQualifiedFormatter::class, $exceptionMatchToViolationQualifiedFormatter);
@@ -57,7 +58,7 @@ final class ExceptionMatchToViolationQualifiedFormatterServiceTest extends Bundl
         self::assertSame($violationsEmbeddedExceptionFormatter, $validationFailedExceptionFormatter);
 
         $formatterRegistry = $this->getFormatterRegistry($exceptionMatchToViolationQualifiedFormatter);
-        self::assertInstanceOf(ServiceLocator::class, $formatterRegistry);
+        self::assertInstanceOf(ChainContainer::class, $formatterRegistry);
 
         $providedServices = $formatterRegistry->getProvidedServices();
         krsort($providedServices);
