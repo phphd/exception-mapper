@@ -6,11 +6,14 @@ namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Q
 
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\ExceptionMatchQualifiedFormatter;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Registry\Container\ChainContainer;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Violation\ExceptionMatchToViolationFormatter;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
+use function Symfony\Component\DependencyInjection\Loader\Configurator\inline_service;
 use function Symfony\Component\DependencyInjection\Loader\Configurator\tagged_locator;
 
 return static function (ContainerConfigurator $configurator, ContainerBuilder $container): void {
@@ -22,10 +25,13 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
 
     $services
         ->set(
-            ExceptionMatchFormatter::class.'<?,'.ConstraintViolationInterface::class.'>',
+            ExceptionMatchFormatter::class.'<?,'.ConstraintViolationInterface::class.'|'.ConstraintViolationListInterface::class.'>',
             ExceptionMatchQualifiedFormatter::class,
         )->args([
-            tagged_locator(ExceptionMatchFormatter::class.'<?,'.ConstraintViolationInterface::class.'>', 'id'),
+            inline_service(ChainContainer::class)->args([[
+                tagged_locator(ExceptionMatchFormatter::class.'<?,'.ConstraintViolationInterface::class.'>', 'id'),
+                tagged_locator(ExceptionMatchFormatter::class.'<?,'.ConstraintViolationListInterface::class.'>', 'id'),
+            ]]),
             ExceptionMatchToViolationFormatter::class,
         ])
     ;

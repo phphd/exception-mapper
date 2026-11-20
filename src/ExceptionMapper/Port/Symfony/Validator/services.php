@@ -30,7 +30,7 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
         ->public()
         ->args([
             service(ExceptionMapper::class.'<'.ExceptionMatchList::class.'>'),
-            service(ExceptionMatchFormatter::class.'<?,'.ConstraintViolationInterface::class.'>'),
+            service(ExceptionMatchFormatter::class.'<?,'.ConstraintViolationInterface::class.'|'.ConstraintViolationListInterface::class.'>'),
         ])
         ->lazy($hintLazy(ExceptionMapper::class))
     ;
