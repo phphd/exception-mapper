@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match;
 
 use Countable;
+use Generator;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
 use Throwable;
 
-use function array_merge;
 use function count;
 
 /** @api */
@@ -25,18 +25,13 @@ final class ExceptionMatchList implements Countable
      *
      * @param ExceptionMatchFormatter<Throwable,TResult> $formatter
      *
-     * @return list<TResult>
+     * @return Generator<TResult>
      */
-    public function format(ExceptionMatchFormatter $formatter): array
+    public function format(ExceptionMatchFormatter $formatter): Generator
     {
-        /** @var list<list<TResult>> $results */
-        $results = [];
-
         foreach ($this->exceptionMatches as $match) {
-            $results[] = $formatter->format($match);
+            yield $formatter->format($match);
         }
-
-        return array_merge(...$results);
     }
 
     /**

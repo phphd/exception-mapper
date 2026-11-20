@@ -11,9 +11,8 @@ use Throwable;
 /** @implements ExceptionMatchFormatter<Throwable,string> */
 final class ExceptionMessageFormatter implements ExceptionMatchFormatter
 {
-    /** @return array{string} */
-    public function format(ExceptionMatch $exceptionMatch): array
+    public function format(ExceptionMatch $exceptionMatch): string
     {
-        return [$exceptionMatch->getException()->getMessage()];
+        return $exceptionMatch->getException()->getMessage();
     }
 }

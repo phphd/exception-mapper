@@ -11,9 +11,9 @@ use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Excepti
 /** @implements ExceptionMatchFormatter<DivisionByZeroError,array{}> */
 final class UnregisteredFormatter implements ExceptionMatchFormatter
 {
-    /** @return non-empty-list<array{}> */
+    /** @return array{} */
     public function format(ExceptionMatch $exceptionMatch): array
     {
-        return [[]];
+        return [];
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionMapper\Port\Symfony\Validator;
 
+use Generator;
 use PhPhD\ExceptionMapper\ExceptionMapper;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\ExceptionMatchList;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
@@ -23,7 +24,7 @@ final class ExceptionToViolationListMapper implements ExceptionMapper
     public function __construct(
         /** @var ExceptionMapper<ExceptionMatchList> */
         private readonly ExceptionMapper $mapper,
-        /** @var ExceptionMatchFormatter<Throwable,ConstraintViolationInterface> */
+        /** @var ExceptionMatchFormatter<Throwable,ConstraintViolationInterface|ConstraintViolationListInterface> */
         private readonly ExceptionMatchFormatter $formatter,
     ) {
     }
@@ -36,8 +37,24 @@ final class ExceptionToViolationListMapper implements ExceptionMapper
             return null;
         }
 
-        $violations = $exceptionMatches->format($this->formatter);
+        $violations = $this->unwrapViolations($exceptionMatches->format($this->formatter));
 
         return new ConstraintViolationList($violations);
+    }
+
+    /**
+     * @param iterable<ConstraintViolationInterface|ConstraintViolationListInterface> $violations
+     *
+     * @return Generator<ConstraintViolationInterface>
+     */
+    private function unwrapViolations(iterable $violations): Generator
+    {
+        foreach ($violations as $violationOrList) {
+            if ($violationOrList instanceof ConstraintViolationListInterface) {
+                yield from $violationOrList;
+            } else {
+                yield $violationOrList;
+            }
+        }
     }
 }

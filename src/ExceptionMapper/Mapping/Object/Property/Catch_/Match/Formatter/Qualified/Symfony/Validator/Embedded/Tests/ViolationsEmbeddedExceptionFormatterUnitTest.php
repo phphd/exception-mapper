@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\Tests;
 
+use LogicException;
 use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\ExceptionMapper;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\Tests\Stub\MessageWithEmbeddedViolations;
@@ -13,6 +14,7 @@ use PhPhD\ExceptionMapper\Tests\Trait\CatchException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validation;
@@ -28,6 +30,7 @@ use function strtr;
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\ViolationsEmbeddedExceptionFormatter
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Translator\SymfonyTranslator
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Registry\Container\ChainContainer
+ * @covers \PhPhD\ExceptionMapper\Port\Symfony\Validator\ExceptionToViolationListMapper
  *
  * @internal
  */
@@ -65,7 +68,19 @@ final class ViolationsEmbeddedExceptionFormatterUnitTest extends TestCase
         $this->mapper = $mapper;
     }
 
-    public function testViolationsEmbeddedExceptionProvidesViolationsList(): void
+    public function testEmptyEmbeddedViolationListFails(): void
+    {
+        $message = MessageWithEmbeddedViolations::create()->withNestedObject(new NestedMessageWithEmbeddedViolations());
+
+        $originalException = new ViolationsEmbeddedExampleException(new ConstraintViolationList());
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Violation list must not be empty');
+
+        $this->mapper->map($originalException, $message);
+    }
+
+    public function testViolationsFromViolationsEmbeddedExceptionAreReturned(): void
     {
         $message = MessageWithEmbeddedViolations::create()->withNestedObject(new NestedMessageWithEmbeddedViolations());
 
@@ -74,7 +89,7 @@ final class ViolationsEmbeddedExceptionFormatterUnitTest extends TestCase
 
         $violation = $this->matchOne($originalException, $message);
 
-        // Pre-translated message is kept as-is: a ViolationsEmbeddedException is not re-translated.
+        // The message is not re-translated. It's a Validator-originated, not a Validation-callable-originated.
         self::assertSame(
             'This value is too long. It should have 2 characters or less.',
             $violation->getMessage(),
@@ -100,7 +115,7 @@ final class ViolationsEmbeddedExceptionFormatterUnitTest extends TestCase
     }
 
     /**
-     * Validation::createCallable() eagerly translates with the server-default locale,
+     * {@see Validation::createCallable()} eagerly translates with the server-default locale,
      * so the formatter must re-translate to honour the request's Accept-Language.
      */
     public function testValidationFailedExceptionMessageIsRetranslated(): void

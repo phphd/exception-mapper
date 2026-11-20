@@ -32,7 +32,7 @@ final class ExceptionMatchQualifiedFormatter implements ExceptionMatchFormatter
     ) {
     }
 
-    public function format(ExceptionMatch $exceptionMatch): array
+    public function format(ExceptionMatch $exceptionMatch): mixed
     {
         $catch = $exceptionMatch->getNode();
 

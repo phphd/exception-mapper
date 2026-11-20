@@ -10,6 +10,8 @@ use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\ExceptionMatch;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validation;
 use Throwable;
@@ -23,7 +25,7 @@ const embedded_violations = ViolationsEmbeddedExceptionFormatter::class;
 /**
  * @internal - use {@see embedded_violations} constant for a class reference instead
  *
- * @implements ExceptionMatchFormatter<ViolationsEmbeddedException|ValidationFailedException,ConstraintViolationInterface>
+ * @implements ExceptionMatchFormatter<ViolationsEmbeddedException|ValidationFailedException,ConstraintViolationListInterface>
  */
 final class ViolationsEmbeddedExceptionFormatter implements ExceptionMatchFormatter
 {
@@ -37,10 +39,8 @@ final class ViolationsEmbeddedExceptionFormatter implements ExceptionMatchFormat
     /**
      * @phpstan-param ExceptionMatch<covariant ViolationsEmbeddedException|ValidationFailedException> $exceptionMatch
      * @psalm-param ExceptionMatch<ViolationsEmbeddedException|ValidationFailedException> $exceptionMatch
-     *
-     * @return non-empty-list<ConstraintViolation>
      */
-    public function format(ExceptionMatch $exceptionMatch): array
+    public function format(ExceptionMatch $exceptionMatch): ConstraintViolationListInterface
     {
         $exception = $exceptionMatch->getException();
 
@@ -60,7 +60,7 @@ final class ViolationsEmbeddedExceptionFormatter implements ExceptionMatchFormat
         $redoTranslation = (null !== $this->translate) && $this->shouldRedoTranslation($exception);
 
         /** @psalm-suppress PossiblyNullFunctionCall */
-        return array_map(
+        return new ConstraintViolationList(array_map(
             fn(ConstraintViolationInterface $violation): ConstraintViolation => new ConstraintViolation(
                 $redoTranslation
                     ? ($this->translate)($violation->getMessageTemplate(), $violation->getParameters())
@@ -76,7 +76,7 @@ final class ViolationsEmbeddedExceptionFormatter implements ExceptionMatchFormat
                 $violation->getCause(),
             ),
             $violationList,
-        );
+        ));
     }
 
     /**
