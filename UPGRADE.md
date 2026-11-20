@@ -12,6 +12,9 @@ for the changes not covered by automatic upgrade via Rector (see the "Upgrading"
 * Removed: `PhPhD\ExceptionalValidation\Formatter\ExceptionListViolationFormatter`. \
   Use `PhPhD\ExceptionMapper\Exception\ExceptionMatchList::format()` instead. 
 
+* Changed: `PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter::format()`'s \
+  return type: it directly returns a single `TResult` instead of array-wrapping it in `non-empty-list<TResult>`.
+
 * Renamed: `PhPhD\ExceptionalValidation\Capture` \
   was renamed into `PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_`. 
 

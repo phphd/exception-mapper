@@ -24,12 +24,10 @@ final class OutOfStockExceptionMatchFormatter implements ExceptionMatchFormatter
     ) {
     }
 
-    /** @return array{ConstraintViolation} */
-    public function format(ExceptionMatch $exceptionMatch): array
+    public function format(ExceptionMatch $exceptionMatch): ConstraintViolationInterface
     {
-        [$violation] = $this->formatter->format($exceptionMatch);
+        $violation = $this->formatter->format($exceptionMatch);
 
-        /** @var OutOfStockProductException $exception */
         $exception = $exceptionMatch->getException();
 
         /** @var AddProductToCartCommand $command */
@@ -46,16 +44,14 @@ final class OutOfStockExceptionMatchFormatter implements ExceptionMatchFormatter
             ? 'Only {{ available }} left in stock. Reduce the quantity by {{ shortage }} item.'
             : 'Only {{ available }} left in stock. Reduce the quantity by {{ shortage }} items.';
 
-        return [
-            new ConstraintViolation(
-                strtr($messageTemplate, $parameters),
-                $messageTemplate,
-                $parameters,
-                $violation->getRoot(),
-                $violation->getPropertyPath(),
-                $violation->getInvalidValue(),
-                $shortage,
-            ),
-        ];
+        return new ConstraintViolation(
+            strtr($messageTemplate, $parameters),
+            $messageTemplate,
+            $parameters,
+            $violation->getRoot(),
+            $violation->getPropertyPath(),
+            $violation->getInvalidValue(),
+            $shortage,
+        );
     }
 }

@@ -132,11 +132,10 @@ final class OutOfStockProductExceptionMatchFormatter implements ExceptionMatchFo
     ) {
     }
 
-    /** @return array{ConstraintViolationInterface} */
-    public function format(ExceptionMatch $exceptionMatch): array
+    public function format(ExceptionMatch $exceptionMatch): ConstraintViolationInterface
     {
         // Format the $violation using a default formatter; then adjust
-        [$violation] = $this->defaultFormatter->format($exceptionMatch);
+        $violation = $this->defaultFormatter->format($exceptionMatch);
 
         /** @var AddProductToCartCommand $command */
         $command = $exceptionMatch->getNode()->getLeafObject();
@@ -145,7 +144,7 @@ final class OutOfStockProductExceptionMatchFormatter implements ExceptionMatchFo
         $exception = $exceptionMatch->getException();
         
         if (0 === $exception->getAvailableQuantity()) {
-            return [$violation]; // 'The product is out of stock'
+            return $violation; // 'The product is out of stock'
         }
 
         $shortage = $command->quantity - $exception->getAvailableQuantity();
@@ -156,7 +155,7 @@ final class OutOfStockProductExceptionMatchFormatter implements ExceptionMatchFo
             '{{ shortage }}' => $shortage,
         ];
 
-        $violation = new ConstraintViolation(
+        return new ConstraintViolation(
             $this->translator->trans($messageTemplate, ['%count%' => $shortage] + $parameters, 'validators'),
             $messageTemplate,
             $parameters,
@@ -165,8 +164,6 @@ final class OutOfStockProductExceptionMatchFormatter implements ExceptionMatchFo
             $violation->getInvalidValue(),
             plural: $shortage,
         );
-
-        return [$violation];
     }
 }
 ```

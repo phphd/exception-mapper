@@ -22,7 +22,7 @@ interface ExceptionMatchFormatter
      * @phpstan-param ExceptionMatch<covariant TException> $exceptionMatch
      * @psalm-param ExceptionMatch<TException&Throwable> $exceptionMatch
      *
-     * @return non-empty-list<TResult>
+     * @return TResult
      */
-    public function format(ExceptionMatch $exceptionMatch): array;
+    public function format(ExceptionMatch $exceptionMatch): mixed;
 }
