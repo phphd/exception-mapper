@@ -31,8 +31,7 @@ final class ExceptionMatchToViolationFormatter implements ExceptionMatchFormatte
         $this->translate = $translate ?? static fn(string $messageTemplate): string => $messageTemplate;
     }
 
-    /** @return array{ConstraintViolation} */
-    public function format(ExceptionMatch $exceptionMatch): array
+    public function format(ExceptionMatch $exceptionMatch): ConstraintViolationInterface
     {
         $exception = $exceptionMatch->getException();
         $node = $exceptionMatch->getNode();
@@ -43,15 +42,13 @@ final class ExceptionMatchToViolationFormatter implements ExceptionMatchFormatte
         $propertyPath = $node->getPropertyPath();
         $value = $node->getValue();
 
-        return [
-            new ConstraintViolation(
-                $message,
-                $messageTemplate,
-                [],
-                $root,
-                $propertyPath->join('.'),
-                $value,
-            ),
-        ];
+        return new ConstraintViolation(
+            $message,
+            $messageTemplate,
+            [],
+            $root,
+            $propertyPath->join('.'),
+            $value,
+        );
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\Tests;
 
+use LogicException;
 use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\ExceptionMapper;
 use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\Tests\Stub\MessageWithEmbeddedViolations;
@@ -12,7 +13,9 @@ use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualifi
 use PhPhD\ExceptionMapper\Tests\Trait\CatchException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validation;
@@ -21,6 +24,7 @@ use Throwable;
 
 use function array_diff_key;
 use function array_flip;
+use function iterator_to_array;
 use function sprintf;
 use function strtr;
 
@@ -28,6 +32,7 @@ use function strtr;
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\ViolationsEmbeddedExceptionFormatter
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Translator\SymfonyTranslator
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Registry\Container\ChainContainer
+ * @covers \PhPhD\ExceptionMapper\Port\Symfony\Validator\ExceptionToViolationListMapper
  *
  * @internal
  */
@@ -97,6 +102,41 @@ final class ViolationsEmbeddedExceptionFormatterUnitTest extends TestCase
         self::assertSame(Length::TOO_LONG_ERROR, $violation->getCode());
         self::assertSame($constraint, $violation->getConstraint());
         self::assertNull($violation->getCause());
+    }
+
+    public function testEveryEmbeddedViolationIsMapped(): void
+    {
+        $message = MessageWithEmbeddedViolations::create()->withNestedObject(new NestedMessageWithEmbeddedViolations());
+
+        $violationList = Validation::createValidator()->validate('123', [new Length(max: 2), new Regex('/^[a-z]+$/')]);
+        $originalException = new ViolationsEmbeddedExampleException($violationList);
+
+        $mappedViolationList = $this->mapper->map($originalException, $message);
+
+        self::assertNotNull($mappedViolationList);
+        self::assertCount(2, $mappedViolationList);
+
+        [$lengthViolation, $regexViolation] = iterator_to_array($mappedViolationList);
+
+        self::assertSame(Length::TOO_LONG_ERROR, $lengthViolation->getCode());
+        self::assertSame($message, $lengthViolation->getRoot());
+        self::assertSame('nestedObject.violationListCapturedProperty', $lengthViolation->getPropertyPath());
+
+        self::assertSame(Regex::REGEX_FAILED_ERROR, $regexViolation->getCode());
+        self::assertSame($message, $regexViolation->getRoot());
+        self::assertSame('nestedObject.violationListCapturedProperty', $regexViolation->getPropertyPath());
+    }
+
+    public function testEmptyEmbeddedViolationListFails(): void
+    {
+        $message = MessageWithEmbeddedViolations::create()->withNestedObject(new NestedMessageWithEmbeddedViolations());
+
+        $originalException = new ViolationsEmbeddedExampleException(new ConstraintViolationList());
+
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage('Violation list must not be empty');
+
+        $this->mapper->map($originalException, $message);
     }
 
     /**

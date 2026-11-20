@@ -12,6 +12,36 @@ for the changes not covered by automatic upgrade via Rector (see the "Upgrading"
 * Removed: `PhPhD\ExceptionalValidation\Formatter\ExceptionListViolationFormatter`. \
   Use `PhPhD\ExceptionMapper\Exception\ExceptionMatchList::format()` instead. 
 
+* Changed: `PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter::format()` \
+  returns a single `TResult` instead of `non-empty-list<TResult>`.
+
+  Custom formatters return the result as is, without the array wrapping:
+  ```diff
+  - /** @return array{ConstraintViolationInterface} */
+  - public function format(ExceptionMatch $exceptionMatch): array
+  + public function format(ExceptionMatch $exceptionMatch): ConstraintViolationInterface
+    {
+  -     [$violation] = $this->defaultFormatter->format($exceptionMatch);
+  +     $violation = $this->defaultFormatter->format($exceptionMatch);
+        // ...
+  -     return [$violation];
+  +     return $violation;
+    }
+  ```
+
+  A formatter producing many violations declares that in its `TResult`: \
+  `ExceptionMatchFormatter<TException,ConstraintViolationListInterface>`.
+
+  `PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\ExceptionMatchList::format()` \
+  yields one `TResult` per match (`Generator<TResult>`) instead of returning a flattened `list<TResult>`.
+
+* Renamed: `ExceptionMatchFormatter<?,ConstraintViolationInterface>` service \
+  was renamed into `ExceptionMatchFormatter<?,ConstraintViolationInterface|ConstraintViolationListInterface>`.
+
+* Renamed: `ExceptionMatchFormatter<ViolationsEmbeddedException,ConstraintViolationInterface>` \
+  and `ExceptionMatchFormatter<ValidationFailedException,ConstraintViolationInterface>` services \
+  were renamed into `...,ConstraintViolationListInterface>`.
+
 * Renamed: `PhPhD\ExceptionalValidation\Capture` \
   was renamed into `PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_`. 
 

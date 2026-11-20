@@ -18,6 +18,7 @@ use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualifi
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 use Throwable;
 
@@ -42,16 +43,18 @@ final class ExceptionMatchToViolationQualifiedFormatterServiceTest extends Bundl
 
     public function testViolationFormatter(): void
     {
-        $exceptionMatchToViolationQualifiedFormatter = $this->get(ExceptionMatchFormatter::class.'<?,'.ConstraintViolationInterface::class.'>');
+        self::assertFalse(self::getContainer()->has(ExceptionMatchFormatter::class.'<?,'.ConstraintViolationInterface::class.'>'));
+
+        $exceptionMatchToViolationQualifiedFormatter = $this->get(ExceptionMatchFormatter::class.'<?,'.ConstraintViolationInterface::class.'|'.ConstraintViolationListInterface::class.'>');
         self::assertInstanceOf(ExceptionMatchQualifiedFormatter::class, $exceptionMatchToViolationQualifiedFormatter);
 
         $defaultFormatter = $this->get(ExceptionMatchFormatter::class.'<'.Throwable::class.','.ConstraintViolationInterface::class.'>');
         self::assertInstanceOf(ExceptionMatchToViolationFormatter::class, $defaultFormatter);
 
-        $violationsEmbeddedExceptionFormatter = $this->get(ExceptionMatchFormatter::class.'<'.ViolationsEmbeddedException::class.','.ConstraintViolationInterface::class.'>');
+        $violationsEmbeddedExceptionFormatter = $this->get(ExceptionMatchFormatter::class.'<'.ViolationsEmbeddedException::class.','.ConstraintViolationListInterface::class.'>');
         self::assertInstanceOf(ViolationsEmbeddedExceptionFormatter::class, $violationsEmbeddedExceptionFormatter);
 
-        $validationFailedExceptionFormatter = $this->get(ExceptionMatchFormatter::class.'<'.ValidationFailedException::class.','.ConstraintViolationInterface::class.'>');
+        $validationFailedExceptionFormatter = $this->get(ExceptionMatchFormatter::class.'<'.ValidationFailedException::class.','.ConstraintViolationListInterface::class.'>');
         self::assertInstanceOf(ViolationsEmbeddedExceptionFormatter::class, $validationFailedExceptionFormatter);
 
         self::assertSame($violationsEmbeddedExceptionFormatter, $validationFailedExceptionFormatter);
