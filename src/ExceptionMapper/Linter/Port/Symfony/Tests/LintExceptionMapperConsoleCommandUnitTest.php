@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionMapper\Linter\Port\Symfony\Tests;
 
 use Closure;
-use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
-use PhPhD\ExceptionMapper\Bundle\Tests\PublicServiceCompilerPass;
+use PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperExtension;
+use PhPhD\ExceptionMapper\Connector\Symfony\Tests\PublicServiceCompilerPass;
 use PhPhD\ExceptionMapper\Linter\Port\Symfony\LintExceptionMapperConsoleCommand;
 use PhPhD\ExceptionMapper\Linter\Tests\Stub\Invalid\UndefinedConstantConditionMessage;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\HandleableMessageStub;

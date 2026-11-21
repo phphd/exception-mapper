@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Blueprint;
 
-use PhPhD\ExceptionMapper\Bundle\Tests\BundleTestCase;
+use PhPhD\ExceptionMapper\Connector\Symfony\Tests\BundleTestCase;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Composite\CompositeMatchConditionCompiler;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Qualified\PHP\Enum\EnumValueMatchCondition;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Qualified\PHP\Enum\EnumValueMatchConditionCompiler;
@@ -25,8 +25,8 @@ use function krsort;
 use function property_exists;
 
 /**
- * @covers \PhPhD\ExceptionMapper\Bundle\PhdExceptionMapperBundle
- * @covers \PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension
+ * @covers \PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperBundle
+ * @covers \PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperExtension
  *
  * @internal
  */

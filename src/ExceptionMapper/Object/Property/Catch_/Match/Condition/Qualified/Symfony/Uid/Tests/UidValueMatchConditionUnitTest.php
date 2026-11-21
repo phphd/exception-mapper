@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Qualified\Symfony\Uid\Tests;
 
-use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
+use PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\ExceptionMapper;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Qualified\Symfony\Uid\Tests\Stub\MessageWithInvalidUidCondition;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\ExceptionMatchList;
@@ -22,7 +22,7 @@ use function property_exists;
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Qualified\Symfony\Uid\UidValueMatchConditionCompiler
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Composite\CompositeMatchConditionCompiler
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Bool\FalseCondition
- * @covers \PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension
+ * @covers \PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperExtension
  *
  * @internal
  */

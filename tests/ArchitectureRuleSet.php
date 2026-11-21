@@ -136,9 +136,9 @@ final class ArchitectureRuleSet
     }
 
     #[TestRule]
-    public function testBundleDependencies(): BuildStep
+    public function testSymfonyConnectorDependencies(): BuildStep
     {
-        return $this->layerRule('bundle');
+        return $this->layerRule('symfonyConnector');
     }
 
     #[TestRule]
@@ -198,7 +198,7 @@ final class ArchitectureRuleSet
     public function layers(): array
     {
         return [
-            'bundle' => [
+            'symfonyConnector' => [
                 'deps' => [
                     Selector::inNamespace('PhPhD\ExceptionToolkit'),
 
@@ -320,15 +320,11 @@ final class ArchitectureRuleSet
         ];
     }
 
-    /**
-     * Container wiring: the bundle extension, the compiler passes, and the class discovery and formatter services they drive.
-     *
-     * @psalm-suppress UnusedMethod
-     */
-    public function bundle(): AnyOfSelectorModifier
+    /** @psalm-suppress UnusedMethod */
+    public function symfonyConnector(): AnyOfSelectorModifier
     {
         return Selector::AnyOf(
-            Selector::inNamespace('PhPhD\ExceptionMapper\Bundle'),
+            Selector::inNamespace('PhPhD\ExceptionMapper\Connector\Symfony'),
             Selector::implements(CompilerPassInterface::class),
             Selector::classname(ConstantsAutoloadingClassDiscovery::class),
             Selector::implements(ConstantsAutoloadingClassDiscovery::class),
@@ -367,7 +363,7 @@ final class ArchitectureRuleSet
                 Selector::classname(Catch_::class),
                 Selector::classname(CompilingObjectExceptionMappingBlueprintRegistry::class),
             ),
-            Selector::Not($this->bundle()),
+            Selector::Not($this->symfonyConnector()),
         );
     }
 
@@ -409,7 +405,7 @@ final class ArchitectureRuleSet
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter'),
             Selector::Not($this->validatorExceptionMatchFormatter()),
-            Selector::Not($this->bundle()),
+            Selector::Not($this->symfonyConnector()),
         );
     }
 
@@ -417,7 +413,7 @@ final class ArchitectureRuleSet
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator'),
-            Selector::Not($this->bundle()),
+            Selector::Not($this->symfonyConnector()),
         );
     }
 
@@ -438,7 +434,7 @@ final class ArchitectureRuleSet
     {
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionMapper\Linter'),
-            Selector::Not($this->bundle()),
+            Selector::Not($this->symfonyConnector()),
         );
     }
 

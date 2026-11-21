@@ -39,7 +39,7 @@ return RectorConfig::configure()
             __DIR__.'/'.'src/ExceptionMapper/Object/Property/Catch_/Match/Port/Symfony/Validator/Middleware/Messenger/Exception/ExceptionalValidationFailedMessengerException.php',
         ],
         AddNameToNullArgumentRector::class => [
-            __DIR__.'/'.'src/ExceptionMapper/Bundle/DependencyInjection/PhdExceptionMapperExtension.php',
+            __DIR__.'/'.'src/ExceptionMapper/Connector/Symfony/PhdExceptionMapperExtension.php',
         ],
         ...upgradeExclusions(),
         ...stubExclusions(),

@@ -60,7 +60,7 @@ bin/console lint:exception-mapper -o json src/
 Lint with a PHPUnit test w/o frameworks:
 
 ```php
-use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
+use PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapperLinter\Port\LintMappingUseCase;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;

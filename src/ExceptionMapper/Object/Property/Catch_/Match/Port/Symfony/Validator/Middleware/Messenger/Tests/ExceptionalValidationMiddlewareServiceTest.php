@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Port\Symfony\Validator\Middleware\Messenger\Tests;
 
-use PhPhD\ExceptionMapper\Bundle\Tests\BundleTestCase;
-use PhPhD\ExceptionMapper\Bundle\Tests\PublicServiceCompilerPass;
+use PhPhD\ExceptionMapper\Connector\Symfony\Tests\BundleTestCase;
+use PhPhD\ExceptionMapper\Connector\Symfony\Tests\PublicServiceCompilerPass;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Port\Symfony\Validator\Middleware\Messenger\ExceptionalValidationMiddleware;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
 /**
- * @covers \PhPhD\ExceptionMapper\Bundle\PhdExceptionMapperBundle
- * @covers \PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension
+ * @covers \PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperBundle
+ * @covers \PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperExtension
  *
  * @internal
  */

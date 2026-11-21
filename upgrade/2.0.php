@@ -12,8 +12,8 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->ruleWithConfiguration(RenameClassRector::class, [
         'PhPhD\ExceptionalValidation' => 'PhPhD\ExceptionMapper\Object\Try_',
         'PhPhD\ExceptionalValidation\Capture' => 'PhPhD\ExceptionMapper\Object\Property\Catch_',
-        'PhPhD\ExceptionalValidation\Bundle\PhdExceptionalValidationBundle' => 'PhPhD\ExceptionMapper\Bundle\PhdExceptionMapperBundle',
-        'PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension' => 'PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension',
+        'PhPhD\ExceptionalValidation\Bundle\PhdExceptionalValidationBundle' => 'PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperBundle',
+        'PhPhD\ExceptionalValidation\Bundle\DependencyInjection\PhdExceptionalValidationExtension' => 'PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperExtension',
         'PhPhD\ExceptionalValidation\Model\Exception\CapturedException' => 'PhPhD\ExceptionMapper\Object\Property\Catch_\Match\ExceptionMatch',
         'PhPhD\ExceptionalValidation\Model\Exception\ExceptionPackage' => 'PhPhD\ExceptionMapper\Object\Property\Catch_\Match\ExceptionReciprocal',
         'PhPhD\ExceptionalValidation\Model\Condition\Value\ValueException' => 'PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Qualified\Value\ValueException',
