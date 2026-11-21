@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Qualified\Value\Tests;
 
-use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
+use PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\ExceptionMapper;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Qualified\Value\Tests\Stub\MessageWithExceptionValueCondition;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Qualified\Value\Tests\Stub\SomeValueException;

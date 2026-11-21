@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Qualified\PHP\Enum\Tests;
 
-use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
+use PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Blueprint\Compiler\Autoload\ConstantsClassLoader;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Qualified\PHP\Enum\EnumValueMatchConditionCompiler;
 use PHPUnit\Framework\TestCase;

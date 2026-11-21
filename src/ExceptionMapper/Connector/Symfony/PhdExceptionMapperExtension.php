@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionMapper\Bundle\DependencyInjection;
+namespace PhPhD\ExceptionMapper\Connector\Symfony;
 
 use Composer\InstalledVersions;
 use Exception;

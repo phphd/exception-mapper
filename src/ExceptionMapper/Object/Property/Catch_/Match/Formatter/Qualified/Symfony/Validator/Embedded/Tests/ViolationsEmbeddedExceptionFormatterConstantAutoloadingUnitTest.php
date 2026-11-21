@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\Tests;
 
-use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
+use PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Blueprint\Compiler\Autoload\ConstantsClassLoader;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\ViolationsEmbeddedExceptionFormatter;
 use PHPUnit\Framework\TestCase;

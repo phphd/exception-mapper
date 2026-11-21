@@ -6,8 +6,8 @@ namespace PhPhD\ExceptionMapper\Object\Blueprint\Registry\Compiler\Tests;
 
 use PhPhD\ExceptionMapper\Blueprint\Compiler\ExceptionMappingCompiler;
 use PhPhD\ExceptionMapper\Blueprint\Compiler\Log\SpyLogger;
-use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
-use PhPhD\ExceptionMapper\Bundle\Tests\PublicServiceCompilerPass;
+use PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperExtension;
+use PhPhD\ExceptionMapper\Connector\Symfony\Tests\PublicServiceCompilerPass;
 use PhPhD\ExceptionMapper\Linter\Tests\Stub\TryWithNoCatchAttributesMessage;
 use PhPhD\ExceptionMapper\Object\Blueprint\ObjectExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Object\Blueprint\Registry\Compiler\Exception\ObjectExceptionMappingPrintCompilationFailedException;

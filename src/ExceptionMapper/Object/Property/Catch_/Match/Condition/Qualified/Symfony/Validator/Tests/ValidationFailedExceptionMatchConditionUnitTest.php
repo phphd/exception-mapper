@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Qualified\Symfony\Validator\Tests;
 
-use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
+use PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\ExceptionMapper;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Qualified\Symfony\Validator\Tests\Stub\MessageWithValidatedValueCondition;
 use PhPhD\ExceptionMapper\Tests\Trait\CatchException;
@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Validation;
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Qualified\Symfony\Validator\ValidationFailedExceptionMatchCondition
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Qualified\Symfony\Validator\ValidationFailedExceptionMatchConditionCompiler
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\ViolationsEmbeddedExceptionFormatter
- * @covers \PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension
+ * @covers \PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperExtension
  *
  * @internal
  */

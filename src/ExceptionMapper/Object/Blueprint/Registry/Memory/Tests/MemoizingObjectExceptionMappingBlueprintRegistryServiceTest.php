@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionMapper\Object\Blueprint\Registry\Memory\Tests;
 
-use PhPhD\ExceptionMapper\Bundle\Tests\BundleTestCase;
-use PhPhD\ExceptionMapper\Bundle\Tests\PublicServiceCompilerPass;
+use PhPhD\ExceptionMapper\Connector\Symfony\Tests\BundleTestCase;
+use PhPhD\ExceptionMapper\Connector\Symfony\Tests\PublicServiceCompilerPass;
 use PhPhD\ExceptionMapper\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\HandleableMessageStub;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;

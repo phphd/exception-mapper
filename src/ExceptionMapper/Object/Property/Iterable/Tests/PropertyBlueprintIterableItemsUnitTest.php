@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionMapper\Object\Property\Iterable\Tests;
 
 use ArrayObject;
-use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
+use PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\ExceptionMapper;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\ExceptionMatchList;
 use PhPhD\ExceptionMapper\Object\Property\Iterable\Tests\Stub\RootObject;

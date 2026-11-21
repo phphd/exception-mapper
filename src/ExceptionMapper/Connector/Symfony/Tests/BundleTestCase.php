@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionMapper\Bundle\Tests;
+namespace PhPhD\ExceptionMapper\Connector\Symfony\Tests;
 
 use Nyholm\BundleTest\TestKernel;
-use PhPhD\ExceptionMapper\Bundle\PhdExceptionMapperBundle;
+use PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperBundle;
 use PhPhD\ExceptionToolkit\Bundle\PhdExceptionToolkitBundle;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;

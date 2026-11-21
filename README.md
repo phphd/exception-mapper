@@ -37,7 +37,7 @@ Install it in either a vanilla PHP project or a Symfony project.
    *\[Symfony\]:* enable the bundles in the `bundles.php`:
 
    ```php
-   PhPhD\ExceptionMapper\Bundle\PhdExceptionMapperBundle::class => ['all' => true],
+   PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperBundle::class => ['all' => true],
    PhPhD\ExceptionToolkit\Bundle\PhdExceptionToolkitBundle::class => ['all' => true],
    ```
 
@@ -447,9 +447,8 @@ In your vanilla project, create a Service Container (`symfony/dependency-injecti
 and use it to get necessary services:
 
 ```php
-use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
+use PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\ExceptionMapper;
-use PhPhD\ExceptionMapperObject\Property\Catch_\Match\ExceptionMatchList;
 
 $container = (new PhdExceptionMapperExtension())->getContainer([
     // In a non-debug mode broken mappings are logged instead of thrown

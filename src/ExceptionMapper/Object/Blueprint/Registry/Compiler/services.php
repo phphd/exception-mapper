@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionMapper\Object\Blueprint\Registry\Compiler;
 
 use PhPhD\ExceptionMapper\Blueprint\Compiler\ExceptionMappingCompiler;
-use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
+use PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\Object\Blueprint\ObjectExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
 use ReflectionClass;

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionMapper\Tests\Unit;
 
 use ArrayObject;
-use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
+use PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\ExceptionMapper;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Violation\Tests\Stub\ObjectPropertyMatchedException;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\AnException;
@@ -27,7 +27,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * @covers \PhPhD\ExceptionMapper\Object\Try_
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_
- * @covers \PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension
+ * @covers \PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperExtension
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Port\ExceptionToMatchListMapper
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Port\Symfony\Validator\ExceptionToViolationListMapper
  * @covers \PhPhD\ExceptionMapper\Object\ObjectExceptionMappingNode

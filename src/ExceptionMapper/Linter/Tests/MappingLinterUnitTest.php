@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionMapper\Linter\Tests;
 
-use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
-use PhPhD\ExceptionMapper\Bundle\Tests\PublicServiceCompilerPass;
+use PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperExtension;
+use PhPhD\ExceptionMapper\Connector\Symfony\Tests\PublicServiceCompilerPass;
 use PhPhD\ExceptionMapper\Linter\MappingLinter;
 use PhPhD\ExceptionMapper\Linter\Report\Defect\Severity\DefectSeverity;
 use PhPhD\ExceptionMapper\Linter\Report\LintReport;

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionMapper\Object\Property\Blueprint\Compiler\Tests;
 
 use PhPhD\ExceptionMapper\Blueprint\Compiler\ExceptionMappingCompiler;
-use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
-use PhPhD\ExceptionMapper\Bundle\Tests\PublicServiceCompilerPass;
+use PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperExtension;
+use PhPhD\ExceptionMapper\Connector\Symfony\Tests\PublicServiceCompilerPass;
 use PhPhD\ExceptionMapper\Object\Property\Blueprint\Compiler\Tests\Stub\Category\Subcategory;
 use PhPhD\ExceptionMapper\Object\Property\Blueprint\Compiler\Tests\Stub\Order\PlaceOrderCommand;
 use PhPhD\ExceptionMapper\Object\Property\Blueprint\Compiler\Tests\Stub\Order\Shipping\ShippingAddress;

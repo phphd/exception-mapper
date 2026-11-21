@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionMapper\Linter\Port\Symfony\Tests;
 
-use PhPhD\ExceptionMapper\Bundle\Tests\BundleTestCase;
+use PhPhD\ExceptionMapper\Connector\Symfony\Tests\BundleTestCase;
 use PhPhD\ExceptionMapper\Linter\Port\Symfony\LintExceptionMapperConsoleCommand;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Command\LazyCommand;
 
 /**
- * @covers \PhPhD\ExceptionMapper\Bundle\PhdExceptionMapperBundle
- * @covers \PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension
+ * @covers \PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperBundle
+ * @covers \PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperExtension
  *
  * @internal
  */
