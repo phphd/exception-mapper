@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionMapper\Port\Symfony\Validator\Middleware\Messenger;
+namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Port\Symfony\Validator\Middleware\Messenger;
 
 use PhPhD\ExceptionMapper\ExceptionMapper;
-use PhPhD\ExceptionMapper\Port\Symfony\Validator\Middleware\Exception\ExceptionalValidationFailedException;
-use PhPhD\ExceptionMapper\Port\Symfony\Validator\Middleware\Messenger\Exception\ExceptionalValidationFailedMessengerException;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Port\Symfony\Validator\Middleware\Exception\ExceptionalValidationFailedException;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Port\Symfony\Validator\Middleware\Messenger\Exception\ExceptionalValidationFailedMessengerException;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Exception\ExceptionInterface;
 use Symfony\Component\Messenger\Middleware\MiddlewareInterface;

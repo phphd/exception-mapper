@@ -5,10 +5,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionMapper\Port\Symfony\Validator\Middleware\Messenger\Exception;
+namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Port\Symfony\Validator\Middleware\Messenger\Exception;
 
 use Exception;
-use PhPhD\ExceptionMapper\Port\Symfony\Validator\Middleware\Exception\ExceptionalValidationFailedException;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Port\Symfony\Validator\Middleware\Exception\ExceptionalValidationFailedException;
 use Symfony\Component\Messenger\Exception\ValidationFailedException as ValidationFailedMessengerException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Throwable;

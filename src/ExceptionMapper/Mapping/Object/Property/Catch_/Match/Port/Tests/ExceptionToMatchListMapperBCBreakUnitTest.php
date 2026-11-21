@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionMapper\Port\Tests;
+namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Port\Tests;
 
 use LogicException;
 use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;

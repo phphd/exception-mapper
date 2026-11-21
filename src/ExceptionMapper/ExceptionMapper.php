@@ -7,9 +7,6 @@ namespace PhPhD\ExceptionMapper;
 use Throwable;
 
 /**
- * Exception Mapper returns matched exception objects only if all exceptions were correctly matched.
- * If at least one exception has not been matched to any of the properties, null is returned.
- *
  * @api
  *
  * @template-covariant T of mixed

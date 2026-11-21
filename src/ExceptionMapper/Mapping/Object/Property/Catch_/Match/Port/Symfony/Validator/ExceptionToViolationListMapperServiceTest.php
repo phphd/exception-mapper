@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionMapper\Port\Symfony\Validator;
+namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Port\Symfony\Validator;
 
 use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\Bundle\Tests\BundleTestCase;
