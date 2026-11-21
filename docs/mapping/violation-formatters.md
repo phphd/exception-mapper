@@ -32,7 +32,7 @@ Retrieves a prebuilt `ConstraintViolationList` straight from exception.
 The exception is either an implementation of `ViolationsEmbeddedException`, or a child of [`ValidationFailedException`](#validationfailedexception-formatter), embedding a `ConstraintViolationList` received from the validator:
 
 ```php
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\ViolationsEmbeddedException;
+use PhPhD\ExceptionMapperObject\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\ViolationsEmbeddedException;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 final class CardNumberValidationFailedException extends \RuntimeException implements ViolationsEmbeddedException
@@ -54,9 +54,9 @@ final class CardNumberValidationFailedException extends \RuntimeException implem
 Finally, the DTO must qualify `format: embedded_violations` for the `#[Catch_]` attribute:
 
 ```php
-use PhPhD\ExceptionMapper\Mapping\Object\Try_;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
-use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\embedded_violations;
+use PhPhD\ExceptionMapperObject\Try_;
+use PhPhD\ExceptionMapperObject\Property\Catch_;
+use const PhPhD\ExceptionMapperObject\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\embedded_violations;
 
 #[Try_]
 class IssueCreditCardCommand
@@ -82,12 +82,12 @@ it picks up the `ConstraintViolationList` embedded in it.
 Specify `format: embedded_violations` for the `#[Catch_]` attribute:
 
 ```php
-use PhPhD\ExceptionMapper\Mapping\Object\Try_;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
+use PhPhD\ExceptionMapperObject\Try_;
+use PhPhD\ExceptionMapperObject\Property\Catch_;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
-use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualified\Symfony\Validator\validated_value;
-use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\embedded_violations;
+use const PhPhD\ExceptionMapperObject\Property\Catch_\Match\Condition\Qualified\Symfony\Validator\validated_value;
+use const PhPhD\ExceptionMapperObject\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\embedded_violations;
 
 #[Try_]
 class RegisterUserCommand
@@ -109,8 +109,8 @@ to pass additional message context for the translation).
 Create a custom formatter by implementing `ExceptionMatchFormatter` interface:
 
 ```php
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\ExceptionMatch;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
+use PhPhD\ExceptionMapperObject\Property\Catch_\Match\ExceptionMatch;
+use PhPhD\ExceptionMapperObject\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
 use Symfony\Component\DependencyInjection\Attribute\AsAlias;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -193,8 +193,8 @@ services:
 Finally, specify the formatter in the `#[Catch_]` attribute's `format:`:
 
 ```php
-use PhPhD\ExceptionMapper\Mapping\Object\Try_;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
+use PhPhD\ExceptionMapperObject\Try_;
+use PhPhD\ExceptionMapperObject\Property\Catch_;
 
 use const App\Cart\Support\Validation\out_of_stock;
 

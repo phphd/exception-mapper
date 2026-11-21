@@ -58,8 +58,8 @@ Mark a command or dto with `#[Try_]` attribute, and properties with `#[Catch_]`.
 Finally, throw those exceptions from your use-case handler:
 
 ```php
-use PhPhD\ExceptionMapper\Mapping\Object\Try_;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
+use PhPhD\ExceptionMapperObject\Try_;
+use PhPhD\ExceptionMapperObject\Property\Catch_;
 
 #[Try_]
 class UserRegistration
@@ -253,8 +253,8 @@ You don't have limitations at all. \
 The mapping for profile update `Dto` is just as high-level as it was for [registration `Dto`](#map-and-throw-):
 
 ```php
-use PhPhD\ExceptionMapper\Mapping\Object\Try_;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
+use PhPhD\ExceptionMapperObject\Try_;
+use PhPhD\ExceptionMapperObject\Property\Catch_;
 
 #[Try_]
 class UserProfileUpdate
@@ -327,7 +327,7 @@ That's all the library does – it matches the exception and formats it (roasts 
 For a cheat-sheet example of configuration, check the following:
 
 ```php
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;use PhPhD\ExceptionMapper\Mapping\Object\Try_;use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;use Symfony\Component\Validator\Exception\ValidationFailedException;use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualified\PHP\Enum\enum_value;use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualified\Symfony\Uid\uid_value;use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualified\Symfony\Validator\validated_value;use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualified\Value\exception_value;use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\embedded_violations;
+use PhPhD\ExceptionMapperObject\Property\Catch_;use PhPhD\ExceptionMapperObject\Try_;use Symfony\Component\Uid\Exception\InvalidArgumentException as InvalidUidException;use Symfony\Component\Validator\Exception\ValidationFailedException;use const PhPhD\ExceptionMapperObject\Property\Catch_\Match\Condition\Qualified\PHP\Enum\enum_value;use const PhPhD\ExceptionMapperObject\Property\Catch_\Match\Condition\Qualified\Symfony\Uid\uid_value;use const PhPhD\ExceptionMapperObject\Property\Catch_\Match\Condition\Qualified\Symfony\Validator\validated_value;use const PhPhD\ExceptionMapperObject\Property\Catch_\Match\Condition\Qualified\Value\exception_value;use const PhPhD\ExceptionMapperObject\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\embedded_violations;
 
 #[Try_]
 class ImportProductDto
@@ -374,7 +374,7 @@ class ImportProductDto
 The mapper automatically picks all nested objects for analysis, provided that they define `#[Try_]` attribute.
 
 ```php
-use PhPhD\ExceptionMapper\Mapping\Object\Try_;
+use PhPhD\ExceptionMapperObject\Try_;
 
 #[Try_]
 class ImportProductBatchDto
@@ -449,7 +449,7 @@ and use it to get necessary services:
 ```php
 use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\ExceptionMapper;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\ExceptionMatchList;
+use PhPhD\ExceptionMapperObject\Property\Catch_\Match\ExceptionMatchList;
 
 $container = (new PhdExceptionMapperExtension())->getContainer([
     // In a non-debug mode broken mappings are logged instead of thrown

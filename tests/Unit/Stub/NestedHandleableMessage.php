@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionMapper\Tests\Unit\Stub;
 
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
-use PhPhD\ExceptionMapper\Mapping\Object\Try_;
+use PhPhD\ExceptionMapper\Object\Property\Catch_;
+use PhPhD\ExceptionMapper\Object\Try_;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\NestedPropertyMatchedException;
 
 #[Try_]

@@ -6,19 +6,19 @@ namespace PhPhD\ExceptionMapper\Tests\Unit\Stub;
 
 use ArrayObject;
 use LogicException;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualified\Value\Tests\Stub\SomeValueException;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Violation\Tests\Stub\MessageContainingException;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Violation\Tests\Stub\ObjectPropertyMatchedException;
-use PhPhD\ExceptionMapper\Mapping\Object\Try_;
+use PhPhD\ExceptionMapper\Object\Property\Catch_;
+use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Qualified\Value\Tests\Stub\SomeValueException;
+use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Violation\Tests\Stub\MessageContainingException;
+use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Violation\Tests\Stub\ObjectPropertyMatchedException;
+use PhPhD\ExceptionMapper\Object\Try_;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\AnException;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\StaticPropertyMatchedException;
 use stdClass;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
-use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualified\Symfony\Validator\validated_value;
-use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Condition\Qualified\Value\exception_value;
-use const PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\embedded_violations;
+use const PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Qualified\Symfony\Validator\validated_value;
+use const PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Qualified\Value\exception_value;
+use const PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\embedded_violations;
 
 /**
  * @psalm-suppress InvalidAttribute ("Attribute Catch_ is not repeatable")

@@ -12,26 +12,26 @@ for the changes not covered by automatic upgrade via Rector (see the "Upgrading"
 * Removed: `PhPhD\ExceptionalValidation\Formatter\ExceptionListViolationFormatter`. \
   Use `PhPhD\ExceptionMapper\Exception\ExceptionMatchList::format()` instead. 
 
-* Changed: `PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter::format()`'s \
+* Changed: `PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter::format()`'s \
   return type: it directly returns a single `TResult` instead of array-wrapping it in `non-empty-list<TResult>`.
 
 * Renamed: `PhPhD\ExceptionalValidation\Capture` \
-  was renamed into `PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_`. 
+  was renamed into `PhPhD\ExceptionMapper\Object\Property\Catch_`. 
 
-* Renamed: `PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_::$when` \
+* Renamed: `PhPhD\ExceptionMapper\Object\Property\Catch_::$when` \
   was renamed into `$if`.
 
-* Renamed: `PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_::$condition` \
+* Renamed: `PhPhD\ExceptionMapper\Object\Property\Catch_::$condition` \
   was renamed into `$match`.
 
-* Renamed: `PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_::$formatter` \
+* Renamed: `PhPhD\ExceptionMapper\Object\Property\Catch_::$formatter` \
   was renamed into `$format`.
 
-* Parameter Moved: `PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_::$message` \
+* Parameter Moved: `PhPhD\ExceptionMapper\Object\Property\Catch_::$message` \
   was moved to be after `$format`.
 
   Not moving it will cause this error:
-  > Parameter #2 `$from` of attribute class `PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_` constructor expects `array{class-string, non-empty-string}|class-string|null`,  
+  > Parameter #2 `$from` of attribute class `PhPhD\ExceptionMapper\Object\Property\Catch_` constructor expects `array{class-string, non-empty-string}|class-string|null`,  
   > `'exception.message'` given.
 
   Fix it by passing it as a named parameter: `message: 'exception.message'`.

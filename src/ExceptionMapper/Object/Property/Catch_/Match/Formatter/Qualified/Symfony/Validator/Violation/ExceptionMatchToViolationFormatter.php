@@ -1,0 +1,54 @@
+<?php
+
+declare(strict_types=1);
+
+namespace PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Violation;
+
+use Closure;
+use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\ExceptionMatch;
+use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
+use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\ConstraintViolationInterface;
+use Throwable;
+
+/**
+ * @internal
+ *
+ * @implements ExceptionMatchFormatter<Throwable,ConstraintViolationInterface>
+ */
+final class ExceptionMatchToViolationFormatter implements ExceptionMatchFormatter
+{
+    /** @var Closure(string):string */
+    private readonly Closure $translate;
+
+    /**
+     * @api
+     *
+     * @param ?Closure(string):string $translate
+     */
+    public function __construct(?Closure $translate = null)
+    {
+        $this->translate = $translate ?? static fn(string $messageTemplate): string => $messageTemplate;
+    }
+
+    public function format(ExceptionMatch $exceptionMatch): ConstraintViolationInterface
+    {
+        $exception = $exceptionMatch->getException();
+        $node = $exceptionMatch->getNode();
+
+        $messageTemplate = $node->getMessageTemplate() ?? $exception->getMessage();
+        $message = ($this->translate)($messageTemplate);
+        $root = $node->getRootObject();
+        $propertyPath = $node->getPropertyPath();
+        $value = $node->getValue();
+
+        return new ConstraintViolation(
+            $message,
+            $messageTemplate,
+            [],
+            $root,
+            $propertyPath->join('.'),
+            $value,
+        );
+    }
+}
