@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionMapper\Port\Symfony\Validator\Middleware\Messenger\Tests;
+namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Port\Symfony\Validator\Middleware\Messenger\Tests;
 
 use PhPhD\ExceptionMapper\Bundle\Tests\BundleTestCase;
 use PhPhD\ExceptionMapper\Bundle\Tests\PublicServiceCompilerPass;
-use PhPhD\ExceptionMapper\Port\Symfony\Validator\Middleware\Exception\ExceptionalValidationFailedException;
-use PhPhD\ExceptionMapper\Port\Symfony\Validator\Middleware\Messenger\ExceptionalValidationMiddleware;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Port\Symfony\Validator\Middleware\Exception\ExceptionalValidationFailedException;
+use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Port\Symfony\Validator\Middleware\Messenger\ExceptionalValidationMiddleware;
 use PhPhD\ExceptionMapper\Tests\Trait\CatchException;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\AnException;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\StaticPropertyMatchedException;
@@ -24,8 +24,8 @@ use Throwable;
 
 /**
  * @covers \PhPhD\ExceptionMapper\Bundle\PhdExceptionMapperBundle
- * @covers \PhPhD\ExceptionMapper\Port\Symfony\Validator\Middleware\Messenger\ExceptionalValidationMiddleware
- * @covers \PhPhD\ExceptionMapper\Port\Symfony\Validator\Middleware\Messenger\Exception\ExceptionalValidationFailedMessengerException
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Port\Symfony\Validator\Middleware\Messenger\ExceptionalValidationMiddleware
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Port\Symfony\Validator\Middleware\Messenger\Exception\ExceptionalValidationFailedMessengerException
  *
  * @internal
  */

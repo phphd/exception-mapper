@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionMapper\Port\Symfony\Validator\Middleware\Messenger;
+namespace PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Port\Symfony\Validator\Middleware\Messenger;
 
 use PhPhD\ExceptionMapper\ExceptionMapper;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

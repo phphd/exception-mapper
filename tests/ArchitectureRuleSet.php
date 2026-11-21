@@ -13,6 +13,7 @@ use PHPat\Selector\SelectorInterface;
 use PHPat\Test\Attributes\TestRule;
 use PHPat\Test\Builder\BuildStep;
 use PHPat\Test\PHPat;
+use PhPhD\ExceptionMapper\ExceptionMapper;
 use PhPhD\ExceptionMapper\Mapping\Blueprint\ExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Mapping\ExceptionMappingNode;
 use PhPhD\ExceptionMapper\Mapping\Matcher\ExceptionMatcher;
@@ -111,9 +112,9 @@ final class ArchitectureRuleSet
     }
 
     #[TestRule]
-    public function testMapperDependencies(): BuildStep
+    public function testMatchMapperDependencies(): BuildStep
     {
-        return $this->layerRule('mapper');
+        return $this->layerRule('matchMapper');
     }
 
     #[TestRule]
@@ -236,13 +237,13 @@ final class ArchitectureRuleSet
             ],
             'validatorMapper' => [
                 'deps' => [
-                    $this->mapper(),
+                    $this->matchMapper(),
                     $this->node(),
                     $this->exceptionMatch(),
                     Selector::inNamespace('Symfony\Component\Validator'),
                 ],
             ],
-            'mapper' => [
+            'matchMapper' => [
                 'deps' => [
                     $this->blueprint(),
                     $this->node(),
@@ -427,6 +428,7 @@ final class ArchitectureRuleSet
                 Selector::inNamespace($namespace = 'PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match'),
                 Selector::Not(Selector::inNamespace($namespace.'\Condition')),
                 Selector::Not(Selector::inNamespace($namespace.'\Formatter')),
+                Selector::Not(Selector::inNamespace($namespace.'\Port')),
             ),
             Selector::classname(ExceptionMatchFormatter::class),
         );
@@ -440,30 +442,30 @@ final class ArchitectureRuleSet
         );
     }
 
-    public function mapper(): AllOfSelectorModifier
+    public function matchMapper(): AnyOfSelectorModifier
     {
-        return Selector::AllOf(
-            Selector::inNamespace('PhPhD\ExceptionMapper'),
-            Selector::Not(Selector::inNamespace('PhPhD\ExceptionMapper\Mapping')),
-            Selector::Not(Selector::inNamespace('PhPhD\ExceptionMapper\Port\Symfony\Validator')),
-            Selector::Not(Selector::inNamespace('PhPhD\ExceptionMapper\Upgrade')),
-            Selector::Not($this->bundle()),
+        return Selector::AnyOf(
+            Selector::AllOf(
+                Selector::inNamespace($namespace = 'PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Port'),
+                Selector::Not(Selector::inNamespace($namespace.'\Symfony')),
+            ),
+            Selector::classname(ExceptionMapper::class),
         );
     }
 
     public function validatorMapper(): AllOfSelectorModifier
     {
         return Selector::AllOf(
-            Selector::inNamespace('PhPhD\ExceptionMapper\Port\Symfony\Validator'),
-            Selector::Not(Selector::inNamespace('PhPhD\ExceptionMapper\Port\Symfony\Validator\Middleware')),
+            Selector::inNamespace('PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Port\Symfony\Validator'),
+            Selector::Not(Selector::inNamespace('PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Port\Symfony\Validator\Middleware')),
         );
     }
 
     public function validatorMiddleware(): AllOfSelectorModifier
     {
         return Selector::AllOf(
-            Selector::inNamespace('PhPhD\ExceptionMapper\Port\Symfony\Validator\Middleware'),
-            Selector::Not(Selector::inNamespace('PhPhD\ExceptionMapper\Port\Symfony\Validator\Middleware\Messenger')),
+            Selector::inNamespace('PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Port\Symfony\Validator\Middleware'),
+            Selector::Not(Selector::inNamespace('PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Port\Symfony\Validator\Middleware\Messenger')),
         );
     }
 
@@ -475,6 +477,6 @@ final class ArchitectureRuleSet
     /** @psalm-suppress UnusedMethod */
     public function messengerValidatorMiddleware(): ClassNamespace
     {
-        return Selector::inNamespace('PhPhD\ExceptionMapper\Port\Symfony\Validator\Middleware\Messenger');
+        return Selector::inNamespace('PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Port\Symfony\Validator\Middleware\Messenger');
     }
 }

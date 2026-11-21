@@ -30,7 +30,7 @@ use function strtr;
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Symfony\Validator\Embedded\ViolationsEmbeddedExceptionFormatter
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Translator\SymfonyTranslator
  * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Registry\Container\ChainContainer
- * @covers \PhPhD\ExceptionMapper\Port\Symfony\Validator\ExceptionToViolationListMapper
+ * @covers \PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Port\Symfony\Validator\ExceptionToViolationListMapper
  *
  * @internal
  */

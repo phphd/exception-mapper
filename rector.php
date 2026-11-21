@@ -36,7 +36,7 @@ return RectorConfig::configure()
             __DIR__.'/'.'src/ExceptionMapper/Mapping/Object/Property/Catch_/Match/Condition/TraceOrigin/ExceptionTraceOriginMatchCondition.php',
         ],
         RemoveParentDelegatingClassMethodRector::class => [
-            __DIR__.'/'.'src/ExceptionMapper/Port/Symfony/Validator/Middleware/Messenger/Exception/ExceptionalValidationFailedMessengerException.php',
+            __DIR__.'/'.'src/ExceptionMapper/Mapping/Object/Property/Catch_/Match/Port/Symfony/Validator/Middleware/Messenger/Exception/ExceptionalValidationFailedMessengerException.php',
         ],
         AddNameToNullArgumentRector::class => [
             __DIR__.'/'.'src/ExceptionMapper/Bundle/DependencyInjection/PhdExceptionMapperExtension.php',
