@@ -8,7 +8,7 @@ use ReflectionNamedType;
 
 use function is_string;
 
-/** @internal */
+/** @api */
 final class StringType implements TypeSpecification
 {
     private const TYPE_STRING = 'string';

@@ -7,7 +7,7 @@ namespace PhPhD\ExceptionMapper\Object\Property\Type\Specification;
 use ReflectionNamedType;
 use ReflectionType;
 
-/** @internal */
+/** @api */
 final class MixedType implements TypeSpecification
 {
     private const TYPE_MIXED = 'mixed';

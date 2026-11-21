@@ -15,6 +15,7 @@ use ReflectionUnionType;
 use function array_any;
 use function sprintf;
 
+/** @api */
 final class PropertyType
 {
     public function __construct(

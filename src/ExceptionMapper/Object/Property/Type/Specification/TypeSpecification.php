@@ -6,7 +6,7 @@ namespace PhPhD\ExceptionMapper\Object\Property\Type\Specification;
 
 use ReflectionNamedType;
 
-/** @internal */
+/** @api */
 interface TypeSpecification
 {
     public function __invoke(mixed $value): bool;

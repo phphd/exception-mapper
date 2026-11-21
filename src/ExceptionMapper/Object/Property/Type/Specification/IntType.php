@@ -8,7 +8,7 @@ use ReflectionNamedType;
 
 use function is_int;
 
-/** @internal */
+/** @api */
 final class IntType implements TypeSpecification
 {
     private const TYPE_INT = 'int';
