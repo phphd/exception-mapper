@@ -8,7 +8,7 @@ use ReflectionNamedType;
 
 use function array_any;
 
-/** @internal */
+/** @api */
 final class AnyType implements TypeSpecification
 {
     public function __construct(
