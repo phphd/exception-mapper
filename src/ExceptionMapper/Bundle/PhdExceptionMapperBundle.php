@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionMapper\Bundle;
 
 use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Blueprint\Compiler\Autoload\ConstantsAutoloadingCompilerPass;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Registry\AutoTag\ExceptionMatchFormatterTagAutoconfigurationCompilerPass;
-use PhPhD\ExceptionMapper\Mapping\Object\Property\Catch_\Match\Formatter\Qualified\Registry\Materialize\ExceptionMatchFormatterTagMaterializationCompilerPass;
+use PhPhD\ExceptionMapper\Object\Property\Catch_\Blueprint\Compiler\Autoload\ConstantsAutoloadingCompilerPass;
+use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\Qualified\Registry\AutoTag\ExceptionMatchFormatterTagAutoconfigurationCompilerPass;
+use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\Qualified\Registry\Materialize\ExceptionMatchFormatterTagMaterializationCompilerPass;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;

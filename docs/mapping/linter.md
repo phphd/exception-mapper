@@ -61,7 +61,7 @@ Lint with a PHPUnit test w/o frameworks:
 
 ```php
 use PhPhD\ExceptionMapper\Bundle\DependencyInjection\PhdExceptionMapperExtension;
-use PhPhD\ExceptionMapper\Mapping\Linter\Port\LintMappingUseCase;
+use PhPhD\ExceptionMapperLinter\Port\LintMappingUseCase;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
