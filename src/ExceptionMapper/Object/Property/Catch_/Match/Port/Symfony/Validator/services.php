@@ -6,6 +6,7 @@ namespace PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Port\Symfony\Valida
 
 use Closure;
 use PhPhD\ExceptionMapper\ExceptionMapper;
+use PhPhD\ExceptionMapper\FaultTolerant\FaultTolerantExceptionMapper;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\ExceptionMatchList;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\ExceptionMatchFormatter;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -33,5 +34,6 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
             service(ExceptionMatchFormatter::class.'<?,'.ConstraintViolationInterface::class.'|'.ConstraintViolationListInterface::class.'>'),
         ])
         ->lazy($hintLazy(ExceptionMapper::class))
+        ->tag(FaultTolerantExceptionMapper::class)
     ;
 };

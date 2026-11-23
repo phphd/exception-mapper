@@ -16,6 +16,7 @@ use PHPat\Test\PHPat;
 use PhPhD\ExceptionMapper\Blueprint\ExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\ExceptionMapper;
 use PhPhD\ExceptionMapper\ExceptionMappingNode;
+use PhPhD\ExceptionMapper\FaultTolerant\FaultTolerantExceptionMapper;
 use PhPhD\ExceptionMapper\Matcher\ExceptionMatcher;
 use PhPhD\ExceptionMapper\Matcher\ExceptionMatcherAggregate;
 use PhPhD\ExceptionMapper\Object\Blueprint\Registry\Compiler\CompilingObjectExceptionMappingBlueprintRegistry;
@@ -142,6 +143,12 @@ final class ArchitectureRuleSet
     }
 
     #[TestRule]
+    public function testFaultTolerantMapperDependencies(): BuildStep
+    {
+        return $this->layerRule('faultTolerantMapper');
+    }
+
+    #[TestRule]
     public function testPropertyTypeDependencies(): BuildStep
     {
         return $this->layerRule('propertyType');
@@ -207,11 +214,19 @@ final class ArchitectureRuleSet
                     Selector::classname(ExceptionMatchFormatter::class),
                     Selector::classname(ExceptionMatchFormatterClassGenericName::class),
                     Selector::classname(ExceptionMatchFormatterClassGenericNameUnion::class),
+                    Selector::classname(FaultTolerantExceptionMapper::class),
                     // Bundle & Extension
                     Selector::inNamespace('Symfony\Component'),
                     Selector::classname(InstalledVersions::class),
                 ],
                 'description' => 'Container wiring must not reach into the mapping model',
+            ],
+            'faultTolerantMapper' => [
+                'deps' => [
+                    Selector::classname(ExceptionMapper::class),
+                    Selector::inNamespace('Psr'),
+                ],
+                'description' => 'Fault tolerance must stay independent of the mapping model',
             ],
             'linter' => [
                 'deps' => [
@@ -462,6 +477,15 @@ final class ArchitectureRuleSet
         return Selector::AllOf(
             Selector::inNamespace('PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Port\Symfony\Validator\Middleware'),
             Selector::Not(Selector::inNamespace('PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Port\Symfony\Validator\Middleware\Messenger')),
+        );
+    }
+
+    /** @psalm-suppress UnusedMethod */
+    public function faultTolerantMapper(): AllOfSelectorModifier
+    {
+        return Selector::AllOf(
+            Selector::inNamespace('PhPhD\ExceptionMapper\FaultTolerant'),
+            Selector::Not($this->symfonyConnector()),
         );
     }
 

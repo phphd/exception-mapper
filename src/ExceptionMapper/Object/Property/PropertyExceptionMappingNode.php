@@ -13,7 +13,7 @@ use PhPhD\ExceptionMapper\Object\Property\Path\PropertyPath;
 final class PropertyExceptionMappingNode implements ExceptionMappingNode
 {
     public function __construct(
-        private readonly ExceptionMappingNode $object,
+        private readonly ExceptionMappingNode $objectNode,
         private readonly string $name,
         private readonly mixed $value,
         /** @var iterable<ExceptionMatcher> $matchers */
@@ -35,22 +35,22 @@ final class PropertyExceptionMappingNode implements ExceptionMappingNode
     /** @codeCoverageIgnore - not used */
     public function getOwner(): ExceptionMappingNode
     {
-        return $this->object;
+        return $this->objectNode;
     }
 
     public function getRootObject(): object
     {
-        return $this->object->getRootObject();
+        return $this->objectNode->getRootObject();
     }
 
     public function getLeafObject(): object
     {
-        return $this->object->getLeafObject();
+        return $this->objectNode->getLeafObject();
     }
 
     public function getPropertyPath(): PropertyPath
     {
-        return $this->object->getPropertyPath()
+        return $this->objectNode->getPropertyPath()
             ->with($this->name)
         ;
     }
