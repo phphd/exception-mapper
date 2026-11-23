@@ -75,17 +75,47 @@ final class PhdExceptionMapperExtension extends AbstractExtension implements Com
         $container->registerExtension($this);
         $container->loadFromExtension($this->getAlias());
 
-        $container->addCompilerPass(new ResolveInstanceofConditionalsPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 100);
-        $container->addCompilerPass(new ConstantsAutoloadingCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, ConstantsAutoloadingCompilerPass::PRIORITY);
-        $container->addCompilerPass(new ExceptionMatchFormatterTagAutoconfigurationCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, ExceptionMatchFormatterTagAutoconfigurationCompilerPass::PRIORITY);
-        $container->addCompilerPass(new FaultTolerantExceptionMapperDecorationCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, FaultTolerantExceptionMapperDecorationCompilerPass::PRIORITY);
+        foreach (self::beforeOptimizationPasses() as $pass => $priority) {
+            $container->addCompilerPass($pass, PassConfig::TYPE_BEFORE_OPTIMIZATION, $priority);
+        }
+
         $container->addCompilerPass($this, PassConfig::TYPE_BEFORE_OPTIMIZATION, -1000);
 
-        $container->addCompilerPass(new ExceptionMatchFormatterTagMaterializationCompilerPass(), PassConfig::TYPE_OPTIMIZE, ExceptionMatchFormatterTagMaterializationCompilerPass::PRIORITY);
-        $container->addCompilerPass(new ResolveChildDefinitionsPass(), PassConfig::TYPE_OPTIMIZE);
-        $container->addCompilerPass(new ServiceLocatorTagPass(), PassConfig::TYPE_OPTIMIZE);
+        foreach (self::optimizationPasses() as $pass => $priority) {
+            $container->addCompilerPass($pass, PassConfig::TYPE_OPTIMIZE, $priority);
+        }
 
         (new PhdExceptionToolkitExtension())->configureContainer($container);
+    }
+
+    /**
+     * @internal
+     *
+     * @return iterable<CompilerPassInterface,int>
+     */
+    public static function beforeOptimizationPasses(): iterable
+    {
+        yield new ResolveInstanceofConditionalsPass() => 100;
+
+        yield new FaultTolerantExceptionMapperDecorationCompilerPass() => FaultTolerantExceptionMapperDecorationCompilerPass::PRIORITY;
+
+        yield new ExceptionMatchFormatterTagAutoconfigurationCompilerPass() => ExceptionMatchFormatterTagAutoconfigurationCompilerPass::PRIORITY;
+
+        yield new ConstantsAutoloadingCompilerPass() => ConstantsAutoloadingCompilerPass::PRIORITY;
+    }
+
+    /**
+     * @internal
+     *
+     * @return iterable<CompilerPassInterface,int>
+     */
+    public static function optimizationPasses(): iterable
+    {
+        yield new ExceptionMatchFormatterTagMaterializationCompilerPass() => ExceptionMatchFormatterTagMaterializationCompilerPass::PRIORITY;
+
+        yield new ResolveChildDefinitionsPass() => 0;
+
+        yield new ServiceLocatorTagPass() => 0;
     }
 
     /**

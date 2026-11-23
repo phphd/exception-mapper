@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionMapper\Connector\Symfony;
 
-use PhPhD\ExceptionMapper\FaultTolerant\FaultTolerantExceptionMapperDecorationCompilerPass;
-use PhPhD\ExceptionMapper\Object\Property\Catch_\Blueprint\Compiler\Autoload\ConstantsAutoloadingCompilerPass;
-use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\Qualified\Registry\AutoTag\ExceptionMatchFormatterTagAutoconfigurationCompilerPass;
-use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\Qualified\Registry\Materialize\ExceptionMatchFormatterTagMaterializationCompilerPass;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+
+use function str_starts_with;
 
 /** @api */
 final class PhdExceptionMapperBundle extends Bundle
@@ -18,31 +17,32 @@ final class PhdExceptionMapperBundle extends Bundle
     /** @override */
     public function build(ContainerBuilder $container): void
     {
-        $container->addCompilerPass(
-            new ConstantsAutoloadingCompilerPass(),
-            PassConfig::TYPE_BEFORE_OPTIMIZATION,
-            ConstantsAutoloadingCompilerPass::PRIORITY,
-        );
-        $container->addCompilerPass(
-            new ExceptionMatchFormatterTagAutoconfigurationCompilerPass(),
-            PassConfig::TYPE_BEFORE_OPTIMIZATION,
-            ExceptionMatchFormatterTagAutoconfigurationCompilerPass::PRIORITY,
-        );
-        $container->addCompilerPass(
-            new FaultTolerantExceptionMapperDecorationCompilerPass(),
-            PassConfig::TYPE_BEFORE_OPTIMIZATION,
-            FaultTolerantExceptionMapperDecorationCompilerPass::PRIORITY,
-        );
-        $container->addCompilerPass(
-            new ExceptionMatchFormatterTagMaterializationCompilerPass(),
-            PassConfig::TYPE_OPTIMIZE,
-            ExceptionMatchFormatterTagMaterializationCompilerPass::PRIORITY,
-        );
+        foreach (self::filterPasses(PhdExceptionMapperExtension::beforeOptimizationPasses()) as $pass => $priority) {
+            $container->addCompilerPass($pass, PassConfig::TYPE_BEFORE_OPTIMIZATION, $priority);
+        }
+
+        foreach (self::filterPasses(PhdExceptionMapperExtension::optimizationPasses()) as $pass => $priority) {
+            $container->addCompilerPass($pass, PassConfig::TYPE_OPTIMIZE, $priority);
+        }
     }
 
     /** @override */
     protected function createContainerExtension(): PhdExceptionMapperExtension
     {
         return new PhdExceptionMapperExtension(generatedProxiesAllowed: true);
+    }
+
+    /**
+     * @param iterable<CompilerPassInterface,int> $passes
+     *
+     * @return iterable<CompilerPassInterface,int>
+     */
+    private static function filterPasses(iterable $passes): iterable
+    {
+        foreach ($passes as $pass => $priority) {
+            if (str_starts_with($pass::class, 'PhPhD\\')) {
+                yield $pass => $priority;
+            }
+        }
     }
 }

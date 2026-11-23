@@ -1,14 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
-namespace Symfony\Component\Uid\Exception;
-
-if (!class_exists(InvalidArgumentException::class)) {
-    /** @see \Symfony\Component\Uid\Exception\InvalidArgumentException */
-    final class InvalidArgumentException extends \InvalidArgumentException
-    {
-        /** @var mixed */
-        public $invalidValue;
-    }
+if (!class_exists(Symfony\Component\Uid\Exception\InvalidArgumentException::class)) {
+    require __DIR__.'/conditional/SymfonyUidInvalidArgumentExceptionMissing.php';
 }
