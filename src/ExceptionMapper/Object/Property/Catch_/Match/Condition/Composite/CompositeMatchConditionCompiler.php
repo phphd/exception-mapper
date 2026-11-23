@@ -21,7 +21,7 @@ final class CompositeMatchConditionCompiler implements MatchConditionCompiler
     /** @api */
     public function __construct(
         /** @var iterable<MatchConditionCompiler<Throwable>> */
-        private readonly iterable $compilers,
+        public readonly iterable $compilers,
     ) {
     }
 
