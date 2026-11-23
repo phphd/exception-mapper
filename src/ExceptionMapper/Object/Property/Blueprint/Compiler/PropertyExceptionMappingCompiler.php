@@ -41,8 +41,7 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
         $this->possiblyExceptionMappedType = new PossiblyExceptionMappedType($this->printRegistry);
     }
 
-    /** @noinspection PhpUnnecessaryStaticReferenceInspection */
-    public function reportingTo(LoggerInterface $reporter): static
+    public function reportingTo(LoggerInterface $reporter): self
     {
         return new self($this->catchCompiler->reportingTo($reporter), $this->printRegistry, $reporter);
     }

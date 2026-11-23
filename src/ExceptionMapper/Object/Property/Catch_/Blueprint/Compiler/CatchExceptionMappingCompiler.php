@@ -48,8 +48,7 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
     ) {
     }
 
-    /** @noinspection PhpUnnecessaryStaticReferenceInspection */
-    public function reportingTo(LoggerInterface $reporter): static
+    public function reportingTo(LoggerInterface $reporter): self
     {
         return new self($this->matchConditionCompiler, $this->exceptionFormatterRegistry, $this->formatterClassGenericNameRegistry, $reporter);
     }

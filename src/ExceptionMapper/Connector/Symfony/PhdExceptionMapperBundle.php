@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionMapper\Connector\Symfony;
 
+use PhPhD\ExceptionMapper\FaultTolerant\FaultTolerantExceptionMapperDecorationCompilerPass;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Blueprint\Compiler\Autoload\ConstantsAutoloadingCompilerPass;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\Qualified\Registry\AutoTag\ExceptionMatchFormatterTagAutoconfigurationCompilerPass;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\Qualified\Registry\Materialize\ExceptionMatchFormatterTagMaterializationCompilerPass;
@@ -26,6 +27,11 @@ final class PhdExceptionMapperBundle extends Bundle
             new ExceptionMatchFormatterTagAutoconfigurationCompilerPass(),
             PassConfig::TYPE_BEFORE_OPTIMIZATION,
             ExceptionMatchFormatterTagAutoconfigurationCompilerPass::PRIORITY,
+        );
+        $container->addCompilerPass(
+            new FaultTolerantExceptionMapperDecorationCompilerPass(),
+            PassConfig::TYPE_BEFORE_OPTIMIZATION,
+            FaultTolerantExceptionMapperDecorationCompilerPass::PRIORITY,
         );
         $container->addCompilerPass(
             new ExceptionMatchFormatterTagMaterializationCompilerPass(),
