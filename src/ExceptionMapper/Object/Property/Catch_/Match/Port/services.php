@@ -6,6 +6,7 @@ namespace PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Port;
 
 use Closure;
 use PhPhD\ExceptionMapper\ExceptionMapper;
+use PhPhD\ExceptionMapper\FaultTolerant\FaultTolerantExceptionMapper;
 use PhPhD\ExceptionMapper\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\ExceptionMatchList;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
@@ -28,6 +29,7 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
             service('phd_exception_mapper.exception_unwrapper'),
         ])
         ->lazy($hintLazy(ExceptionMapper::class))
+        ->tag(FaultTolerantExceptionMapper::class)
     ;
 
     $services->alias('phd_exception_mapper.exception_unwrapper', ExceptionUnwrapper::class);

@@ -7,6 +7,7 @@ namespace PhPhD\ExceptionMapper\Connector\Symfony;
 use Composer\InstalledVersions;
 use Exception;
 use LogicException;
+use PhPhD\ExceptionMapper\FaultTolerant\FaultTolerantExceptionMapperDecorationCompilerPass;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Blueprint\Compiler\Autoload\ConstantsAutoloadingCompilerPass;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\Qualified\Registry\AutoTag\ExceptionMatchFormatterTagAutoconfigurationCompilerPass;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\Qualified\Registry\Materialize\ExceptionMatchFormatterTagMaterializationCompilerPass;
@@ -49,7 +50,7 @@ final class PhdExceptionMapperExtension extends AbstractExtension implements Com
      * @param array<string,mixed> $parameters required by {@see \Symfony\Component\DependencyInjection\Extension\ExtensionTrait::executeConfiguratorCallback()}:
      *                                        - kernel.environment
      *                                        - kernel.build_dir
-     *                                        - kernel.debug: false makes broken mappings to be reported to the `logger` service instead of thrown
+     *                                        - kernel.debug: FALSE makes the failing mappers to report to `logger` instead of throwing
      */
     public function getContainer(array $parameters): ContainerBuilder
     {
@@ -77,6 +78,7 @@ final class PhdExceptionMapperExtension extends AbstractExtension implements Com
         $container->addCompilerPass(new ResolveInstanceofConditionalsPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 100);
         $container->addCompilerPass(new ConstantsAutoloadingCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, ConstantsAutoloadingCompilerPass::PRIORITY);
         $container->addCompilerPass(new ExceptionMatchFormatterTagAutoconfigurationCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, ExceptionMatchFormatterTagAutoconfigurationCompilerPass::PRIORITY);
+        $container->addCompilerPass(new FaultTolerantExceptionMapperDecorationCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, FaultTolerantExceptionMapperDecorationCompilerPass::PRIORITY);
         $container->addCompilerPass($this, PassConfig::TYPE_BEFORE_OPTIMIZATION, -1000);
 
         $container->addCompilerPass(new ExceptionMatchFormatterTagMaterializationCompilerPass(), PassConfig::TYPE_OPTIMIZE, ExceptionMatchFormatterTagMaterializationCompilerPass::PRIORITY);

@@ -451,9 +451,10 @@ use PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\ExceptionMapper;
 
 $container = (new PhdExceptionMapperExtension())->getContainer([
-    // In a non-debug mode broken mappings are logged instead of thrown
+    // In a non-debug mode mappers are fault-tolerant:
+    // A failing mapper logs its failures instead of throwing, preventing exception shadowing on production. 
     'kernel.debug' => false,
-    // These are not required by the library but are required by Symfony DI
+    // These options are not used by the library but are required for Symfony DI
     'kernel.environment' => 'prod',
     'kernel.build_dir' => __DIR__.'/var/cache',
 ]);
