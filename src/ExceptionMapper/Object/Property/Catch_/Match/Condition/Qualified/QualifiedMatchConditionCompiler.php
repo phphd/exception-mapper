@@ -28,7 +28,7 @@ final class QualifiedMatchConditionCompiler implements MatchConditionCompiler
      * @param ContainerInterface<class-string<MatchCondition<T>>,MatchConditionCompiler<T>> $matchConditionCompilerRegistry
      */
     public function __construct(
-        private readonly ContainerInterface $matchConditionCompilerRegistry,
+        public readonly ContainerInterface $matchConditionCompilerRegistry,
     ) {
     }
 

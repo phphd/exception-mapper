@@ -26,9 +26,9 @@ final class ExceptionMatchQualifiedFormatter implements ExceptionMatchFormatter
     /** @api */
     public function __construct(
         /** @var ContainerInterface<class-string<ExceptionMatchFormatter<TException,TResult>>,ExceptionMatchFormatter<TException,TResult>> */
-        private readonly ContainerInterface $formatterRegistry,
+        public readonly ContainerInterface $formatterRegistry,
         /** @var ?class-string<ExceptionMatchFormatter<TException,TResult>> */
-        private readonly ?string $defaultFormatter = null,
+        public readonly ?string $defaultFormatter = null,
     ) {
     }
 

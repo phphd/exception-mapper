@@ -59,19 +59,14 @@ final class MatchConditionCompilerServiceTest extends BundleTestCase
 
     private function getConditionCompilerRegistry(CompositeMatchConditionCompiler $compiler): ContainerInterface // @phpstan-ignore missingType.generics
     {
-        $factory = $this->getQualifiedMatchConditionCompiler($compiler);
-
-        /** @psalm-suppress InternalProperty, InaccessibleProperty, PossiblyNullFunctionCall, PossiblyNullReference */
-        return (static fn(): ContainerInterface => $factory->matchConditionCompilerRegistry) // @phpstan-ignore-line
-            ->bindTo(newThis: null, newScope: QualifiedMatchConditionCompiler::class)->__invoke()
-        ;
+        return $this->getQualifiedMatchConditionCompiler($compiler)->matchConditionCompilerRegistry;
     }
 
     private function getQualifiedMatchConditionCompiler(CompositeMatchConditionCompiler $compiler): QualifiedMatchConditionCompiler
     {
-        /** @psalm-suppress InternalProperty, InaccessibleProperty, InvalidArrayAccess, PossiblyNullFunctionCall, PossiblyNullReference */
-        return (static fn(): QualifiedMatchConditionCompiler => $compiler->compilers[2]) // @phpstan-ignore-line
-            ->bindTo(newThis: null, newScope: CompositeMatchConditionCompiler::class)->__invoke()
-        ;
+        /** @var array{2:QualifiedMatchConditionCompiler} $compilers */
+        $compilers = $compiler->compilers;
+
+        return $compilers[2];
     }
 }

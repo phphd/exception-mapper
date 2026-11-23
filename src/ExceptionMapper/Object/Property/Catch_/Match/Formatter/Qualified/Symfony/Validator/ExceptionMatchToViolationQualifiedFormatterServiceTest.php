@@ -15,7 +15,6 @@ use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\Qualified\Tests
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\Qualified\Tests\Stub\Cart\OutOfStockExceptionMatchFormatterCompilerPass;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\Qualified\Tests\Stub\Message\ExceptionMessageFormatter;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\Qualified\Tests\Stub\Message\ExceptionMessageFormatterCompilerPass;
-use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -58,7 +57,7 @@ final class ExceptionMatchToViolationQualifiedFormatterServiceTest extends Bundl
 
         self::assertSame($violationsEmbeddedExceptionFormatter, $validationFailedExceptionFormatter);
 
-        $formatterRegistry = $this->getFormatterRegistry($exceptionMatchToViolationQualifiedFormatter);
+        $formatterRegistry = $exceptionMatchToViolationQualifiedFormatter->formatterRegistry;
         self::assertInstanceOf(ChainContainer::class, $formatterRegistry);
 
         $providedServices = $formatterRegistry->getProvidedServices();
@@ -73,16 +72,8 @@ final class ExceptionMatchToViolationQualifiedFormatterServiceTest extends Bundl
             ViolationsEmbeddedExceptionFormatter::class => ViolationsEmbeddedExceptionFormatter::class,
         ], $providedServices);
 
+        /** @psalm-suppress InvalidArgument */
         self::assertSame($defaultFormatter, $formatterRegistry->get(ExceptionMatchToViolationFormatter::class));
-    }
-
-    /** @param ExceptionMatchQualifiedFormatter<Throwable,mixed> $exceptionMatchFormatter */
-    private function getFormatterRegistry(ExceptionMatchQualifiedFormatter $exceptionMatchFormatter): ContainerInterface // @phpstan-ignore missingType.generics
-    {
-        /** @psalm-suppress InternalProperty, InaccessibleProperty, PossiblyNullFunctionCall, PossiblyNullReference */
-        return (static fn(): ContainerInterface => $exceptionMatchFormatter->formatterRegistry) // @phpstan-ignore-line
-            ->bindTo(newThis: null, newScope: ExceptionMatchQualifiedFormatter::class)->__invoke()
-        ;
     }
 
     private function get(string $id): mixed
