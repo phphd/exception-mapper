@@ -47,7 +47,6 @@ final class ExceptionalValidationMiddlewareIntegrationTest extends BundleTestCas
 
         /** @var ExceptionalValidationMiddleware $middleware */
         $middleware = $container->get('phd_exceptional_validation');
-
         $this->middleware = $middleware;
 
         $this->nextMiddleware = $this->createMock(MiddlewareInterface::class);
@@ -60,38 +59,36 @@ final class ExceptionalValidationMiddlewareIntegrationTest extends BundleTestCas
         return [new PublicServiceCompilerPass('phd_exceptional_validation')];
     }
 
-    public function testReturnsResultEnvelopeWhenNoException(): void
-    {
-        $envelope = Envelope::wrap(HandleableMessageStub::create());
-        $resultEnvelope = Envelope::wrap(new stdClass());
-
-        $this->nextMiddleware
-            ->expects(self::atLeastOnce())
-            ->method('handle')
-            ->willReturnMap([[$envelope, $this->stack, $resultEnvelope]])
-        ;
-
-        $result = $this->middleware->handle($envelope, $this->stack);
-
-        self::assertSame($resultEnvelope, $result);
-    }
-
-    public function testHandlesWrappedExceptionsOfHandlerFailedException(): void
+    public function testHandlesTheException(): void
     {
         $envelope = Envelope::wrap(HandleableMessageStub::create());
 
-        $handlerException1 = new AnException();
-        $handlerException2 = new StaticPropertyMatchedException();
+        $handlerException = new AnException();
 
-        $messengerException = new HandlerFailedException(
-            $envelope,
-            [$handlerException1, new HandlerFailedException(
-                $envelope,
-                [$handlerException2],
-            )],
+        $this->middlewareThrows($handlerException);
+
+        $e = self::catchException(
+            fn(): Envelope => $this->middleware->handle($envelope, $this->stack),
+            ExceptionalValidationFailedException::class,
         );
 
-        $this->willThrow($messengerException);
+        self::assertSame($handlerException, $e->getPrevious());
+    }
+
+    public function testHandlesTheExceptionWrappedIntoHandlerFailedException(): void
+    {
+        $messengerException = new HandlerFailedException(
+            $envelope = Envelope::wrap(HandleableMessageStub::create()),
+            [
+                new AnException(), // handler exception 1
+                new HandlerFailedException(
+                    $envelope,
+                    [new StaticPropertyMatchedException()], // handler exception 2
+                ),
+            ],
+        );
+
+        $this->middlewareThrows($messengerException);
 
         $e = self::catchException(
             fn(): Envelope => $this->middleware->handle($envelope, $this->stack),
@@ -112,40 +109,50 @@ final class ExceptionalValidationMiddlewareIntegrationTest extends BundleTestCas
         self::assertSame('staticProperty', $violations->get(1)->getPropertyPath());
     }
 
-    public function testHandlesNotWrappedException(): void
-    {
-        $envelope = Envelope::wrap(HandleableMessageStub::create());
-
-        $handlerException = new AnException();
-
-        $this->willThrow($handlerException);
-
-        $e = self::catchException(
-            fn(): Envelope => $this->middleware->handle($envelope, $this->stack),
-            ExceptionalValidationFailedException::class,
-        );
-
-        self::assertSame($handlerException, $e->getPrevious());
-    }
-
-    public function testRethrowsUnhandledException(): void
+    public function testRethrowsTheNextMiddlewareExceptionIfUnmatched(): void
     {
         $envelope = Envelope::wrap(HandleableMessageStub::create());
 
         $exception = new RuntimeException();
-
-        $this->willThrow($exception);
+        $this->middlewareThrows($exception);
 
         $this->expectExceptionObject($exception);
 
         $this->middleware->handle($envelope, $this->stack);
     }
 
-    private function willThrow(Throwable $exception): void
+    public function testReturnsWhenNoExceptionIsThrown(): void
+    {
+        $envelope = Envelope::wrap(HandleableMessageStub::create());
+        $resultEnvelope = Envelope::wrap(new stdClass());
+
+        $this->middlewareReturns($envelope, $resultEnvelope);
+
+        $result = $this->middleware->handle($envelope, $this->stack);
+
+        self::assertSame($resultEnvelope, $result);
+    }
+
+    private function middlewareThrows(Throwable $exception): void
     {
         $this->nextMiddleware
             ->method('handle')
             ->willThrowException($exception)
+        ;
+    }
+
+    private function middlewareReturns(Envelope $envelope, Envelope $resultEnvelope): void
+    {
+        $this->nextMiddleware
+            ->expects(self::atLeastOnce())
+            ->method('handle')
+            ->willReturnMap([
+                [
+                    $envelope,
+                    $this->stack,
+                    $resultEnvelope,
+                ],
+            ])
         ;
     }
 }
