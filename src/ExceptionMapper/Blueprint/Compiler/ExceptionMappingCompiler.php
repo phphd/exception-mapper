@@ -19,8 +19,8 @@ use Reflector;
  */
 interface ExceptionMappingCompiler
 {
-    /** @return static<TReflector,TPrint> */
-    public function reportingTo(LoggerInterface $reporter): static;
+    /** @return self<TReflector,TPrint> */
+    public function reportingTo(LoggerInterface $reporter): self;
 
     /**
      * @param TReflector $reflector
