@@ -154,16 +154,6 @@ final class PropertyExceptionMappingCompilerUnitTest extends TestCase
         return self::probes()->of(PropertyInclusionRule::BuiltInClassTypedPropertyIsSkipped);
     }
 
-    private static function probes(): ProbeSet
-    {
-        return new ProbeSet(self::PROBED_CLASSES);
-    }
-
-    private function compile(ReflectionProperty $property): ?PropertyExceptionMappingBlueprint
-    {
-        return $this->compiler->compile($property);
-    }
-
     private function assertIsIncluded(ReflectionProperty $property): void
     {
         $blueprint = $this->compile($property);
@@ -178,5 +168,15 @@ final class PropertyExceptionMappingCompilerUnitTest extends TestCase
             $blueprint->getProperty(),
             ProbeSet::referenceOf($property).' blueprint must reference the very probed property.',
         );
+    }
+
+    private static function probes(): ProbeSet
+    {
+        return new ProbeSet(self::PROBED_CLASSES);
+    }
+
+    private function compile(ReflectionProperty $property): ?PropertyExceptionMappingBlueprint
+    {
+        return $this->compiler->compile($property);
     }
 }

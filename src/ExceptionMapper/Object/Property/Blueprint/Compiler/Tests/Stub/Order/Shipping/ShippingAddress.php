@@ -14,5 +14,9 @@ final class ShippingAddress
 {
     #[ProbeOf(PropertyInclusionRule::CatchAttributedPropertyIsIncluded)]
     #[Catch_(InvalidPostalCodeException::class)]
-    private string $postalCode;
+    public string $postalCode;
+
+    /** Neighbour's address, should the courier find no one home */
+    #[ProbeOf(PropertyInclusionRule::FinalExceptionMappedClassTypedPropertyIsIncluded, 'self-referencing')]
+    public ?ShippingAddress $fallbackAddress = null;
 }

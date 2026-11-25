@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionMapper\Object\Property\Blueprint\Compiler\Type;
 
-use PhPhD\ExceptionMapper\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
+use PhPhD\ExceptionMapper\Object\Blueprint\Registry\Compiler\ObjectExceptionMappingCompiler;
 use PhPhD\ExceptionMapper\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Object\Property\Type\Specification\AnyType;
 use PhPhD\ExceptionMapper\Object\Property\Type\Specification\MixedType;
@@ -17,12 +17,6 @@ use function in_array;
 /** @internal */
 final class PossiblyExceptionMappedType implements TypeSpecification
 {
-    public function __construct(
-        /** @var ObjectExceptionMappingBlueprintRegistry<object> */
-        private readonly ObjectExceptionMappingBlueprintRegistry $blueprintRegistry,
-    ) {
-    }
-
     /** @codeCoverageIgnore */
     public function __invoke(mixed $value): bool
     {
@@ -31,7 +25,7 @@ final class PossiblyExceptionMappedType implements TypeSpecification
         }
 
         if (PropertyExceptionMappingBlueprint::isObject()($value)) {
-            return null !== $this->blueprintRegistry->getMappingBlueprint($value::class);
+            return ObjectExceptionMappingCompiler::isMappedClass(new ReflectionClass($value::class));
         }
 
         return false;
@@ -65,7 +59,7 @@ final class PossiblyExceptionMappedType implements TypeSpecification
             $reflectionClass->isInterface(),
             // Non-final classes might have any extender - including those with #[Try_]
             !$reflectionClass->isFinal() => true,
-            default => null !== $this->blueprintRegistry->getMappingBlueprint($className),
+            default => ObjectExceptionMappingCompiler::isMappedClass($reflectionClass),
         };
     }
 
