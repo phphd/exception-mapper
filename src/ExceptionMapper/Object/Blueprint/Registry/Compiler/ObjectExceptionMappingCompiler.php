@@ -34,6 +34,12 @@ final class ObjectExceptionMappingCompiler implements ExceptionMappingCompiler
     ) {
     }
 
+    /** @param ReflectionClass<object> $reflectionClass */
+    public static function isMappedClass(ReflectionClass $reflectionClass): bool
+    {
+        return [] !== $reflectionClass->getAttributes(Try_::class);
+    }
+
     public function reportingTo(LoggerInterface $reporter): self
     {
         return new self($this->propertyCompiler->reportingTo($reporter), $reporter);
@@ -65,7 +71,7 @@ final class ObjectExceptionMappingCompiler implements ExceptionMappingCompiler
      */
     private function doCompile(ReflectionClass $reflectionClass): ?ObjectExceptionMappingBlueprint
     {
-        if ([] === $reflectionClass->getAttributes(Try_::class)) {
+        if (!self::isMappedClass($reflectionClass)) {
             return null;
         }
 

@@ -12,10 +12,10 @@ use PhPhD\ExceptionMapper\Linter\Report\Defect\Location\DefectLocation;
 use PhPhD\ExceptionMapper\Linter\Report\Defect\MappingDefect;
 use PhPhD\ExceptionMapper\Linter\Report\LintReport;
 use PhPhD\ExceptionMapper\Object\Blueprint\ObjectExceptionMappingBlueprint;
+use PhPhD\ExceptionMapper\Object\Blueprint\Registry\Compiler\ObjectExceptionMappingCompiler;
 use PhPhD\ExceptionMapper\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionMapper\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Object\Property\Catch_;
-use PhPhD\ExceptionMapper\Object\Try_;
 use ReflectionClass;
 use ReflectionProperty;
 
@@ -153,7 +153,7 @@ final class ClassMappingLinter implements MappingLinter
      */
     private function lintStructure(ReflectionClass $reflectionClass): Generator
     {
-        if (!$this->hasTryAttribute($reflectionClass)) {
+        if (!ObjectExceptionMappingCompiler::isMappedClass($reflectionClass)) {
             return;
         }
 
@@ -182,12 +182,6 @@ final class ClassMappingLinter implements MappingLinter
                 }
             }
         }
-    }
-
-    /** @param ReflectionClass<object> $reflectionClass */
-    private function hasTryAttribute(ReflectionClass $reflectionClass): bool
-    {
-        return [] !== $reflectionClass->getAttributes(Try_::class);
     }
 
     private function hasCatchAttributes(ReflectionProperty $reflectionProperty): bool

@@ -29,8 +29,6 @@ use Throwable;
  */
 final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
 {
-    private readonly PossiblyExceptionMappedType $possiblyExceptionMappedType;
-
     public function __construct(
         /** @var ExceptionMappingCompiler<ReflectionAttribute<Catch_<Throwable,Throwable>>,CatchExceptionMappingBlueprint<Throwable>> */
         private readonly ExceptionMappingCompiler $catchCompiler,
@@ -38,7 +36,6 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
         private readonly ObjectExceptionMappingBlueprintRegistry $printRegistry,
         private readonly ?LoggerInterface $errorReporter = null,
     ) {
-        $this->possiblyExceptionMappedType = new PossiblyExceptionMappedType($this->printRegistry);
     }
 
     public function reportingTo(LoggerInterface $reporter): self
@@ -70,7 +67,7 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
         $propertyPrint = new PropertyExceptionMappingBlueprint($property, $catchPrints, $this->printRegistry);
 
         if (!$propertyPrint->hasCatchPrints()
-            && !$this->propertyType($property)->takes($this->possiblyExceptionMappedType)) {
+            && !$this->propertyType($property)->takes(self::possiblyExceptionMappedType())) {
             return null;
         }
 
@@ -121,5 +118,13 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
 
             throw $e;
         }
+    }
+
+    private static function possiblyExceptionMappedType(): PossiblyExceptionMappedType
+    {
+        static $possiblyExceptionMappedType = new PossiblyExceptionMappedType();
+
+        /** @phpstan-var PossiblyExceptionMappedType */
+        return $possiblyExceptionMappedType;
     }
 }
