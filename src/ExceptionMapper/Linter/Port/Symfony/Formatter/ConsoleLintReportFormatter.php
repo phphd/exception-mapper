@@ -238,27 +238,32 @@ final class ConsoleLintReportFormatter implements LintReportFormatter
 
     private function dumpSummary(SymfonyStyle $style, LintReport $report): void
     {
-        $summary = sprintf('%d classes scanned: %s found.', $report->getScannedSymbols(), $this->defectBreakdown($report));
-
         if ($report->countOf(DefectSeverity::Error) > 0) {
-            $style->error($summary);
+            $style->error($this->summary($report));
 
             return;
         }
 
         if ($report->countOf(DefectSeverity::Warning) > 0) {
-            $style->warning($summary);
+            $style->warning($this->summary($report));
 
             return;
         }
 
         if ($report->countOf(DefectSeverity::Notice) > 0) {
-            $style->note($summary);
+            $style->note($this->summary($report));
 
             return;
         }
 
-        $style->success($summary);
+        $style->success($this->summary($report));
+    }
+
+    private function summary(LintReport $report): string
+    {
+        $plural = 1 === $report->getScannedSymbols() ? '' : 'es';
+
+        return sprintf('%d class%s scanned: %s found.', $report->getScannedSymbols(), $plural, $this->defectBreakdown($report));
     }
 
     /** Only the severities that occurred, so that the summary names nothing but what is there to fix */
