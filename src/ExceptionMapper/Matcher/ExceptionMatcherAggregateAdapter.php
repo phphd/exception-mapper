@@ -10,13 +10,13 @@ use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\ExceptionReciprocal;
 final class ExceptionMatcherAggregateAdapter implements ExceptionMatcher
 {
     public function __construct(
-        private readonly ExceptionMatcherAggregate $aggregate,
+        private readonly ExceptionMatcherIteratorAggregate $aggregate,
     ) {
     }
 
     public function match(ExceptionReciprocal $reciprocal): bool
     {
-        foreach ($this->aggregate->getExceptionMatchers() as $matcher) {
+        foreach ($this->aggregate->getIterator() as $matcher) {
             if ($matcher->match($reciprocal)) {
                 return true;
             }

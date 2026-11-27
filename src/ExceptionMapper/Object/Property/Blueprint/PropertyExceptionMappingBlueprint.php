@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace PhPhD\ExceptionMapper\Object\Property\Blueprint;
 
-use ArrayIterator;
 use PhPhD\ExceptionMapper\Blueprint\ExceptionMappingBlueprint;
+use PhPhD\ExceptionMapper\Blueprint\Matcher\LateBindingExceptionMatcherIteratorAggregate;
 use PhPhD\ExceptionMapper\ExceptionMappingNode;
-use PhPhD\ExceptionMapper\Matcher\ExceptionMatcher;
-use PhPhD\ExceptionMapper\Matcher\ExceptionMatcherAggregateAdapter;
 use PhPhD\ExceptionMapper\Object\ObjectExceptionMappingNode;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint;
-use PhPhD\ExceptionMapper\Object\Property\Catch_\CatchAttributesExceptionMatcherAggregate;
 use PhPhD\ExceptionMapper\Object\Property\PropertyExceptionMappingNode;
 use ReflectionProperty;
 use Throwable;
@@ -33,15 +30,14 @@ final class PropertyExceptionMappingBlueprint implements ExceptionMappingBluepri
     /** @param ObjectExceptionMappingNode $embracingNode */
     public function bind(ExceptionMappingNode $embracingNode): PropertyExceptionMappingNode
     {
-        $name = $this->property->getName();
-        $value = $this->getPropertyValue($embracingNode->getLeafObject());
+        $propertyNode = new PropertyExceptionMappingNode(
+            $embracingNode,
+            $this->property->getName(),
+            $this->getPropertyValue($embracingNode->getLeafObject()),
+            $matchersIterable = new LateBindingExceptionMatcherIteratorAggregate($this->catchPrints),
+        );
 
-        /** @var ArrayIterator<int,ExceptionMatcher> $matchers */
-        $matchers = new ArrayIterator();
-
-        $propertyNode = new PropertyExceptionMappingNode($embracingNode, $name, $value, $matchers);
-
-        $matchers->append(new ExceptionMatcherAggregateAdapter(new CatchAttributesExceptionMatcherAggregate($propertyNode, $this->catchPrints)));
+        $matchersIterable->attachNode($propertyNode);
 
         return $propertyNode;
     }

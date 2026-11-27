@@ -18,7 +18,7 @@ use PhPhD\ExceptionMapper\ExceptionMapper;
 use PhPhD\ExceptionMapper\ExceptionMappingNode;
 use PhPhD\ExceptionMapper\FaultTolerant\FaultTolerantExceptionMapper;
 use PhPhD\ExceptionMapper\Matcher\ExceptionMatcher;
-use PhPhD\ExceptionMapper\Matcher\ExceptionMatcherAggregate;
+use PhPhD\ExceptionMapper\Matcher\ExceptionMatcherIteratorAggregate;
 use PhPhD\ExceptionMapper\Object\Blueprint\Registry\Compiler\CompilingObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionMapper\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionMapper\Object\Property\Catch_;
@@ -355,8 +355,8 @@ final class ArchitectureRuleSet
             Selector::implements(ExceptionMatcher::class),
             Selector::classname(ExceptionMappingNode::class),
             Selector::implements(ExceptionMappingNode::class),
-            Selector::classname(ExceptionMatcherAggregate::class),
-            Selector::implements(ExceptionMatcherAggregate::class),
+            Selector::classname(ExceptionMatcherIteratorAggregate::class),
+            Selector::implements(ExceptionMatcherIteratorAggregate::class),
             Selector::classname(PropertyPath::class),
         );
     }

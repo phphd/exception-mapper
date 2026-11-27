@@ -8,11 +8,11 @@ use ArrayIterator;
 use PhPhD\ExceptionMapper\Blueprint\ExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\ExceptionMappingNode;
 use PhPhD\ExceptionMapper\Matcher\ExceptionMatcher;
-use PhPhD\ExceptionMapper\Matcher\ExceptionMatcherAggregate;
 use PhPhD\ExceptionMapper\Matcher\ExceptionMatcherAggregateAdapter;
+use PhPhD\ExceptionMapper\Matcher\ExceptionMatcherIteratorAggregate;
 use PhPhD\ExceptionMapper\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionMapper\Object\ObjectExceptionMappingNode;
-use PhPhD\ExceptionMapper\Object\Property\Iterable\IterablePropertyExceptionMatcherAggregate;
+use PhPhD\ExceptionMapper\Object\Property\Iterable\IterablePropertyExceptionMatcherIteratorAggregate;
 use PhPhD\ExceptionMapper\Object\Property\PropertyExceptionMappingNode;
 use PhPhD\ExceptionMapper\Object\Property\Type\Specification\MixedIterableType;
 use PhPhD\ExceptionMapper\Object\Property\Type\Specification\MixedObjectType;
@@ -85,7 +85,7 @@ final class CascadePropertyExceptionMappingBlueprint implements ExceptionMapping
         return $isObject;
     }
 
-    private function innerObjectsIterableMatcher(PropertyExceptionMappingNode $property): ?ExceptionMatcherAggregate
+    private function innerObjectsIterableMatcher(PropertyExceptionMappingNode $property): ?ExceptionMatcherIteratorAggregate
     {
         $value = $property->getValue();
 
@@ -93,7 +93,7 @@ final class CascadePropertyExceptionMappingBlueprint implements ExceptionMapping
             return null;
         }
 
-        return new IterablePropertyExceptionMatcherAggregate($property, $this->printRegistry);
+        return new IterablePropertyExceptionMatcherIteratorAggregate($property, $this->printRegistry);
     }
 
     /** Iterable might contain #[Try_] objects */
