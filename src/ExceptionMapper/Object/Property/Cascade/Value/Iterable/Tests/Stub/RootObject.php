@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionMapper\Object\Property\Iterable\Tests\Stub;
+namespace PhPhD\ExceptionMapper\Object\Property\Cascade\Value\Iterable\Tests\Stub;
 
 use ArrayObject;
 use PhPhD\ExceptionMapper\Object\Try_;

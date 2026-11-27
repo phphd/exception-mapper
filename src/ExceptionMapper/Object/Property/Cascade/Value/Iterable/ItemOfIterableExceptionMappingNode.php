@@ -2,38 +2,34 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionMapper\Object\Property\Iterable;
+namespace PhPhD\ExceptionMapper\Object\Property\Cascade\Value\Iterable;
 
 use PhPhD\ExceptionMapper\ExceptionMappingNode;
-use PhPhD\ExceptionMapper\Object\Blueprint\ObjectExceptionMappingBlueprint;
+use PhPhD\ExceptionMapper\Matcher\ExceptionMatcher;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\ExceptionReciprocal;
 use PhPhD\ExceptionMapper\Object\Property\Path\PropertyPath;
 
-/**
- * @internal
- *
- * @template T of object
- */
+/** @internal */
 final class ItemOfIterableExceptionMappingNode implements ExceptionMappingNode
 {
-    private readonly ExceptionMappingNode $objectNode;
-
-    /**
-     * @param T $value
-     * @param ObjectExceptionMappingBlueprint<T> $print
-     */
     public function __construct(
         private readonly ExceptionMappingNode $propertyNode,
         private readonly int|string $key,
-        private readonly object $value,
-        ObjectExceptionMappingBlueprint $print,
+        private readonly mixed $value,
+        /** @var iterable<ExceptionMatcher> $matchers */
+        private readonly iterable $matchers,
     ) {
-        $this->objectNode = $print->bind($this, $this->value);
     }
 
     public function match(ExceptionReciprocal $reciprocal): bool
     {
-        return $this->objectNode->match($reciprocal);
+        foreach ($this->matchers as $matcher) {
+            if ($matcher->match($reciprocal)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /** @codeCoverageIgnore - not used */
@@ -59,8 +55,7 @@ final class ItemOfIterableExceptionMappingNode implements ExceptionMappingNode
         ;
     }
 
-    /** @return T */
-    public function getValue(): object
+    public function getValue(): mixed
     {
         return $this->value;
     }

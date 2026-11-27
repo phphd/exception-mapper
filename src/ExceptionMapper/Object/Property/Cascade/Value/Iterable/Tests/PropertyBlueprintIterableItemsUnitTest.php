@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionMapper\Object\Property\Iterable\Tests;
+namespace PhPhD\ExceptionMapper\Object\Property\Cascade\Value\Iterable\Tests;
 
 use ArrayObject;
 use PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\ExceptionMapper;
+use PhPhD\ExceptionMapper\Object\Property\Cascade\Value\Iterable\Tests\Stub\RootObject;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\ExceptionMatchList;
-use PhPhD\ExceptionMapper\Object\Property\Iterable\Tests\Stub\RootObject;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\Exception\NestedItemMatchedException;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\MessageWithNoTryAttribute;
 use PhPhD\ExceptionMapper\Tests\Unit\Stub\NestedItem;
@@ -19,8 +19,11 @@ use PHPUnit\Framework\TestCase;
  *
  * @covers \PhPhD\ExceptionMapper\Object\Property\Blueprint\PropertyExceptionMappingBlueprint
  * @covers \PhPhD\ExceptionMapper\Object\Property\Cascade\Blueprint\CascadePropertyExceptionMappingBlueprint
- * @covers \PhPhD\ExceptionMapper\Object\Property\Iterable\IterablePropertyExceptionMatcherIteratorAggregate
- * @covers \PhPhD\ExceptionMapper\Object\Property\Iterable\ItemOfIterableExceptionMappingNode
+ * @covers \PhPhD\ExceptionMapper\Object\Property\Cascade\Value\Blueprint\CascadeValueExceptionMatcherBlueprint
+ * @covers \PhPhD\ExceptionMapper\Object\Property\Cascade\Value\Iterable\Blueprint\CascadeIterableExceptionMatcherIteratorBlueprint
+ * @covers \PhPhD\ExceptionMapper\Object\Property\Cascade\Value\Iterable\Blueprint\ItemOfIterableExceptionMappingBlueprint
+ * @covers \PhPhD\ExceptionMapper\Object\Property\Cascade\Value\Object\Blueprint\CascadeObjectExceptionMappingBlueprint
+ * @covers \PhPhD\ExceptionMapper\Object\Property\Cascade\Value\Iterable\ItemOfIterableExceptionMappingNode
  * @covers \PhPhD\ExceptionMapper\Object\Property\Type\Specification\MixedIterableType
  */
 final class PropertyBlueprintIterableItemsUnitTest extends TestCase

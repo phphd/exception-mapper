@@ -21,6 +21,8 @@ use PhPhD\ExceptionMapper\Matcher\ExceptionMatcher;
 use PhPhD\ExceptionMapper\Matcher\ExceptionMatcherIteratorAggregate;
 use PhPhD\ExceptionMapper\Object\Blueprint\Registry\Compiler\CompilingObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionMapper\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
+use PhPhD\ExceptionMapper\Object\Property\Cascade\Value\Blueprint\CascadeValueExceptionMatcherBlueprint;
+use PhPhD\ExceptionMapper\Object\Property\Cascade\Value\Iterable\Blueprint\CascadeIterableExceptionMatcherIteratorBlueprint;
 use PhPhD\ExceptionMapper\Object\Property\Catch_;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Blueprint\Compiler\Autoload\ConstantsAutoloadingClassDiscovery;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Blueprint\Compiler\Autoload\ConstantsClassLoader;
@@ -367,6 +369,8 @@ final class ArchitectureRuleSet
             Selector::classname(ExceptionMappingBlueprint::class),
             Selector::implements(ExceptionMappingBlueprint::class),
             Selector::classname(ObjectExceptionMappingBlueprintRegistry::class),
+            Selector::classname(CascadeIterableExceptionMatcherIteratorBlueprint::class),
+            Selector::classname(CascadeValueExceptionMatcherBlueprint::class),
         );
     }
 

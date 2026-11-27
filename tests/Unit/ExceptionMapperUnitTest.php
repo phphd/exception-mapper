@@ -31,7 +31,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Port\ExceptionToMatchListMapper
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Port\Symfony\Validator\ExceptionToViolationListMapper
  * @covers \PhPhD\ExceptionMapper\Object\ObjectExceptionMappingNode
- * @covers \PhPhD\ExceptionMapper\Object\Property\Iterable\ItemOfIterableExceptionMappingNode
+ * @covers \PhPhD\ExceptionMapper\Object\Property\Cascade\Value\Iterable\ItemOfIterableExceptionMappingNode
  * @covers \PhPhD\ExceptionMapper\Object\Property\PropertyExceptionMappingNode
  * @covers \PhPhD\ExceptionMapper\Object\Property\Path\PropertyPath
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Match\ExceptionReciprocal
@@ -42,8 +42,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionMapper\Object\Blueprint\Registry\Compiler\CompilingObjectExceptionMappingBlueprintRegistry
  * @covers \PhPhD\ExceptionMapper\Object\Property\Blueprint\PropertyExceptionMappingBlueprint
  * @covers \PhPhD\ExceptionMapper\Object\Property\Cascade\Blueprint\CascadePropertyExceptionMappingBlueprint
+ * @covers \PhPhD\ExceptionMapper\Object\Property\Cascade\Value\Blueprint\CascadeValueExceptionMatcherBlueprint
+ * @covers \PhPhD\ExceptionMapper\Object\Property\Cascade\Value\Object\Blueprint\CascadeObjectExceptionMappingBlueprint
  * @covers \PhPhD\ExceptionMapper\Blueprint\Matcher\LateBindingExceptionMatcherIteratorAggregate
- * @covers \PhPhD\ExceptionMapper\Matcher\ExceptionMatcherAggregateAdapter
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\CatchExceptionMappingNode
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Class\ExceptionClassMatchCondition
