@@ -16,6 +16,7 @@ use PhPhD\ExceptionMapper\Object\Blueprint\Registry\Compiler\ObjectExceptionMapp
 use PhPhD\ExceptionMapper\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionMapper\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Object\Property\Catch_;
+use PhPhD\ExceptionMapper\Util\Iterator\IsEmptyIterable;
 use ReflectionClass;
 use ReflectionProperty;
 
@@ -131,7 +132,9 @@ final class ClassMappingLinter implements MappingLinter
         $missingTryDefects = [];
 
         foreach ($reflectionClass->getProperties() as $property) {
-            if (true !== $this->propertyCompiler->compile($property)?->hasCatchPrints()) {
+            $propertyPrint = $this->propertyCompiler->compile($property);
+
+            if (null === $propertyPrint || (new IsEmptyIterable($propertyPrint->catchPrints))()) {
                 continue;
             }
 

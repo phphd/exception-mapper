@@ -13,6 +13,7 @@ use PhPhD\ExceptionMapper\Object\Blueprint\ObjectExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Object\Blueprint\Registry\Compiler\Exception\ObjectExceptionMappingPrintCompilationFailedException;
 use PhPhD\ExceptionMapper\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Object\Try_;
+use PhPhD\ExceptionMapper\Util\Iterator\IsEmptyIterable;
 use PhPhD\ExceptionMapper\Util\Iterator\MemoizingIteratorAggregate;
 use Psr\Log\LoggerInterface;
 use ReflectionClass;
@@ -56,11 +57,11 @@ final class ObjectExceptionMappingCompiler implements ExceptionMappingCompiler
     {
         $this->except(
             function () use ($blueprint): void {
-                foreach ($blueprint->getPropertyPrints() as $propertyPrint) {
+                foreach ($blueprint->propertyPrints as $propertyPrint) {
                     $this->propertyCompiler->forceFullCompilation($propertyPrint);
                 }
             },
-            new ReflectionClass($blueprint->getClassName()),
+            new ReflectionClass($blueprint->className),
         );
     }
 
@@ -84,7 +85,8 @@ final class ObjectExceptionMappingCompiler implements ExceptionMappingCompiler
             new MemoizingIteratorAggregate($this->compilePropertyPrints($reflectionClass)),
         );
 
-        if (!$objectPrint->hasPropertyPrints()) {
+        /** @noinspection PhpConditionAlreadyCheckedInspection */
+        if ((new IsEmptyIterable($objectPrint->propertyPrints))()) {
             throw new LogicException('#[Try_] class does not define any #[Catch_] mappings and no nested matchable properties, so it never matches anything.');
         }
 

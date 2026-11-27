@@ -8,6 +8,7 @@ use Iterator;
 use PhPhD\ExceptionMapper\Object\Property\Catch_;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Blueprint\MatchConditionBlueprint;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Blueprint\MatchConditionCompiler;
+use PhPhD\ExceptionMapper\Util\Iterator\IsEmptyIterable;
 use PhPhD\ExceptionMapper\Util\Iterator\MemoizingIteratorAggregate;
 use ReflectionProperty;
 use Throwable;
@@ -30,7 +31,7 @@ final class CompositeMatchConditionCompiler implements MatchConditionCompiler
     {
         $print = new CompositeMatchConditionBlueprint(new MemoizingIteratorAggregate($this->conditionPrints($property, $catch)));
 
-        if (!$print->hasPrints()) {
+        if ((new IsEmptyIterable($print->prints))()) {
             return null;
         }
 
