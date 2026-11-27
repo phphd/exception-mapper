@@ -8,6 +8,7 @@ use Iterator;
 use PhPhD\ExceptionMapper\ExceptionMappingNode;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Blueprint\MatchConditionBlueprint;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\MatchCondition;
+use PhPhD\ExceptionMapper\Util\Iterator\MemoizingIteratorAggregate;
 use Throwable;
 
 use function iterator_count;

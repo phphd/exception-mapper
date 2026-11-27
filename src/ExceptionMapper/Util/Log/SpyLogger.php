@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionMapper\Blueprint\Compiler\Log;
+namespace PhPhD\ExceptionMapper\Util\Log;
 
 use Psr\Log\AbstractLogger;
 use Stringable;

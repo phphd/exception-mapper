@@ -37,7 +37,7 @@ use Symfony\Component\Validator\Exception\ValidationFailedException;
  *
  * @covers \PhPhD\ExceptionMapper\Linter\Class\ClassMappingLinter
  * @covers \PhPhD\ExceptionMapper\Linter\Class\CompilationDefectCollector
- * @covers \PhPhD\ExceptionMapper\Blueprint\Compiler\Log\SpyLogger
+ * @covers \PhPhD\ExceptionMapper\Util\Log\SpyLogger
  * @covers \PhPhD\ExceptionMapper\Linter\Report\LintReport
  * @covers \PhPhD\ExceptionMapper\Linter\Report\Class\ClassReport
  * @covers \PhPhD\ExceptionMapper\Linter\Report\Defect\MappingDefect
@@ -59,7 +59,7 @@ use Symfony\Component\Validator\Exception\ValidationFailedException;
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\Qualified\Registry\ExceptionMatchFormatterClassGenericNameUnion
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\Qualified\Registry\GenericParameterDoesNotTakeTypeException
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Composite\CompositeMatchConditionBlueprint
- * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Composite\MemoizingIteratorAggregate
+ * @covers \PhPhD\ExceptionMapper\Util\Iterator\MemoizingIteratorAggregate
  */
 final class MappingLinterUnitTest extends TestCase
 {

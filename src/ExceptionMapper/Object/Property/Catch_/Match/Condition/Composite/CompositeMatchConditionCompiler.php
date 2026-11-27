@@ -8,6 +8,7 @@ use Iterator;
 use PhPhD\ExceptionMapper\Object\Property\Catch_;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Blueprint\MatchConditionBlueprint;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Blueprint\MatchConditionCompiler;
+use PhPhD\ExceptionMapper\Util\Iterator\MemoizingIteratorAggregate;
 use ReflectionProperty;
 use Throwable;
 

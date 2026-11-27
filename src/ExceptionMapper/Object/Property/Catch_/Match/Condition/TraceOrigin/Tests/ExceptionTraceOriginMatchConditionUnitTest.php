@@ -26,7 +26,7 @@ use function PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\TraceO
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Blueprint\PreCompiledMatchConditionBlueprint
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Composite\CompositeMatchConditionCompiler
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Composite\CompositeMatchConditionBlueprint
- * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Composite\MemoizingIteratorAggregate
+ * @covers \PhPhD\ExceptionMapper\Util\Iterator\MemoizingIteratorAggregate
  *
  * @internal
  */
