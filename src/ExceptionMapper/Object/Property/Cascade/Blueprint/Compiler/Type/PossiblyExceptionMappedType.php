@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionMapper\Object\Property\Blueprint\Compiler\Type;
+namespace PhPhD\ExceptionMapper\Object\Property\Cascade\Blueprint\Compiler\Type;
 
 use PhPhD\ExceptionMapper\Object\Blueprint\Registry\Compiler\ObjectExceptionMappingCompiler;
-use PhPhD\ExceptionMapper\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
+use PhPhD\ExceptionMapper\Object\Property\Cascade\Blueprint\CascadePropertyExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Object\Property\Type\Specification\AnyType;
 use PhPhD\ExceptionMapper\Object\Property\Type\Specification\MixedType;
 use PhPhD\ExceptionMapper\Object\Property\Type\Specification\TypeSpecification;
@@ -17,14 +17,14 @@ use function in_array;
 /** @internal */
 final class PossiblyExceptionMappedType implements TypeSpecification
 {
-    /** @codeCoverageIgnore */
+    /** @codeCoverageIgnore - not used */
     public function __invoke(mixed $value): bool
     {
-        if (PropertyExceptionMappingBlueprint::isIterable()($value)) {
+        if (CascadePropertyExceptionMappingBlueprint::isIterable()($value)) {
             return true;
         }
 
-        if (PropertyExceptionMappingBlueprint::isObject()($value)) {
+        if (CascadePropertyExceptionMappingBlueprint::isObject()($value)) {
             return ObjectExceptionMappingCompiler::isMappedClass(new ReflectionClass($value::class));
         }
 
@@ -69,8 +69,8 @@ final class PossiblyExceptionMappedType implements TypeSpecification
 
         /** @phpstan-var AnyType */
         return $mixedTypesSpecification ??= new AnyType([
-            PropertyExceptionMappingBlueprint::isObject(),
-            PropertyExceptionMappingBlueprint::isIterable(),
+            CascadePropertyExceptionMappingBlueprint::isObject(),
+            CascadePropertyExceptionMappingBlueprint::isIterable(),
             new MixedType(),
         ]);
     }

@@ -53,7 +53,7 @@ final class JsonLintReportFormatterUnitTest extends TestCase
                         "class": "PhPhD\\ExceptionMapper\\Tests\\Unit\\Stub\\MessageWithNoTryAttribute",
                         "property": "property",
                         "messages": [
-                            "Properties declare #[Catch_] mappings, but the class is not marked with #[Try_], so it never matches anything."
+                            "Properties declare #[Catch_] mappings, but the class is not marked with #[Try_] attribute, so it never matches."
                         ]
                     }
                 ]

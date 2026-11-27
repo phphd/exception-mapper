@@ -10,6 +10,7 @@ use PhPhD\ExceptionMapper\Blueprint\ExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\ExceptionMappingNode;
 use PhPhD\ExceptionMapper\Object\ObjectExceptionMappingNode;
 use PhPhD\ExceptionMapper\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
+use PhPhD\ExceptionMapper\Object\Property\Cascade\Blueprint\CascadePropertyExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Util\Iterator\MemoizingIteratorAggregate;
 use Webmozart\Assert\Assert;
 
@@ -27,6 +28,8 @@ final class ObjectExceptionMappingBlueprint implements ExceptionMappingBlueprint
         public readonly string $className,
         /** @var iterable<PropertyExceptionMappingBlueprint> */
         public readonly iterable $propertyPrints,
+        /** @var iterable<CascadePropertyExceptionMappingBlueprint> */
+        public readonly iterable $cascadePropertyPrints,
     ) {
     }
 
@@ -36,21 +39,34 @@ final class ObjectExceptionMappingBlueprint implements ExceptionMappingBlueprint
         Assert::notNull($object);
         Assert::isInstanceOf($object, $this->className); // @phpstan-ignore staticMethod.alreadyNarrowedType
 
-        /** @var AppendIterator<int,ExceptionMappingNode,Iterator<int,ExceptionMappingNode>> $properties */
-        $properties = new AppendIterator();
+        /** @var AppendIterator<int,ExceptionMappingNode,Iterator<int,ExceptionMappingNode>> $catchProperties */
+        $catchProperties = new AppendIterator();
 
-        $objectNode = new ObjectExceptionMappingNode($object, $embracingNode, new MemoizingIteratorAggregate($properties));
+        /** @var AppendIterator<int,ExceptionMappingNode,Iterator<int,ExceptionMappingNode>> $cascadeProperties */
+        $cascadeProperties = new AppendIterator();
 
-        $properties->append($this->bindProperties($objectNode));
+        $objectNode = new ObjectExceptionMappingNode(
+            $object,
+            $embracingNode,
+            new MemoizingIteratorAggregate($catchProperties),
+            new MemoizingIteratorAggregate($cascadeProperties),
+        );
+
+        $catchProperties->append(self::bindProperties($this->propertyPrints, $objectNode));
+        $cascadeProperties->append(self::bindProperties($this->cascadePropertyPrints, $objectNode));
 
         return $objectNode;
     }
 
-    /** @return Iterator<int,ExceptionMappingNode> */
-    private function bindProperties(ObjectExceptionMappingNode $objectNode): Iterator
+    /**
+     * @param iterable<PropertyExceptionMappingBlueprint|CascadePropertyExceptionMappingBlueprint> $prints
+     *
+     * @return Iterator<int,ExceptionMappingNode>
+     */
+    private static function bindProperties(iterable $prints, ObjectExceptionMappingNode $objectNode): Iterator
     {
-        foreach ($this->propertyPrints as $propertyPrint) {
-            yield $propertyPrint->bind($objectNode);
+        foreach ($prints as $print) {
+            yield $print->bind($objectNode);
         }
     }
 }

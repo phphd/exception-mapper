@@ -125,7 +125,7 @@ final class CatchExceptionMappingCompiler implements ExceptionMappingCompiler
         Assert::notNull($conditionPrint, 'Condition compiler must produce a blueprint.');
 
         if ($conditionPrint instanceof PreCompiledMatchConditionBlueprint && $conditionPrint->bind() instanceof FalseCondition) {
-            throw new LogicException('#[Catch_] match condition is pre-compiled to false, so it never matches anything.');
+            throw new LogicException('#[Catch_] match condition is pre-compiled to false, so it never matches.');
         }
 
         return $conditionPrint;
