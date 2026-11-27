@@ -24,9 +24,9 @@ final class ObjectExceptionMappingBlueprint implements ExceptionMappingBlueprint
 {
     public function __construct(
         /** @var class-string<T> */
-        private readonly string $className,
+        public readonly string $className,
         /** @var iterable<PropertyExceptionMappingBlueprint> */
-        private readonly iterable $propertyPrints,
+        public readonly iterable $propertyPrints,
     ) {
     }
 
@@ -44,29 +44,6 @@ final class ObjectExceptionMappingBlueprint implements ExceptionMappingBlueprint
         $properties->append($this->bindProperties($objectNode));
 
         return $objectNode;
-    }
-
-    /** @return class-string<T> */
-    public function getClassName(): string
-    {
-        return $this->className;
-    }
-
-    /** @return iterable<PropertyExceptionMappingBlueprint> */
-    public function getPropertyPrints(): iterable
-    {
-        return $this->propertyPrints;
-    }
-
-    /** @psalm-suppress UnusedForeachValue */
-    public function hasPropertyPrints(): bool
-    {
-        /** @noinspection PhpLoopNeverIteratesInspection */
-        foreach ($this->propertyPrints as $print) {
-            return true;
-        }
-
-        return false;
     }
 
     /** @return Iterator<int,ExceptionMappingNode> */

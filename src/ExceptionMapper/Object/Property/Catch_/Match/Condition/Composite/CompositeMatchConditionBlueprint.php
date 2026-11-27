@@ -22,24 +22,13 @@ final class CompositeMatchConditionBlueprint implements MatchConditionBlueprint
 {
     public function __construct(
         /** @var iterable<MatchConditionBlueprint<Throwable>> */
-        private readonly iterable $prints,
+        public readonly iterable $prints,
     ) {
     }
 
     public function bind(ExceptionMappingNode $node): CompositeMatchCondition
     {
         return new CompositeMatchCondition(new MemoizingIteratorAggregate($this->conditions($node)));
-    }
-
-    /** @psalm-suppress UnusedForeachValue */
-    public function hasPrints(): bool
-    {
-        /** @noinspection PhpLoopNeverIteratesInspection */
-        foreach ($this->prints as $print) {
-            return true;
-        }
-
-        return false;
     }
 
     public function forceCompleteCompilation(): int

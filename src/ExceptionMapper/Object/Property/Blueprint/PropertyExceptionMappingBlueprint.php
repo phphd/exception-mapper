@@ -18,6 +18,7 @@ use PhPhD\ExceptionMapper\Object\Property\Iterable\IterablePropertyExceptionMatc
 use PhPhD\ExceptionMapper\Object\Property\PropertyExceptionMappingNode;
 use PhPhD\ExceptionMapper\Object\Property\Type\Specification\MixedIterableType;
 use PhPhD\ExceptionMapper\Object\Property\Type\Specification\MixedObjectType;
+use PhPhD\ExceptionMapper\Util\Iterator\IsEmptyIterable;
 use ReflectionProperty;
 use Throwable;
 
@@ -29,9 +30,9 @@ use Throwable;
 final class PropertyExceptionMappingBlueprint implements ExceptionMappingBlueprint
 {
     public function __construct(
-        private readonly ReflectionProperty $property,
+        public readonly ReflectionProperty $property,
         /** @var iterable<CatchExceptionMappingBlueprint<Throwable>> */
-        private readonly iterable $catchPrints,
+        public readonly iterable $catchPrints,
         /** @var ObjectExceptionMappingBlueprintRegistry<object> */
         private readonly ObjectExceptionMappingBlueprintRegistry $printRegistry,
     ) {
@@ -40,7 +41,7 @@ final class PropertyExceptionMappingBlueprint implements ExceptionMappingBluepri
     /** @param ObjectExceptionMappingNode $embracingNode */
     public function bind(ExceptionMappingNode $embracingNode): PropertyExceptionMappingNode
     {
-        $name = $this->getName();
+        $name = $this->property->getName();
         $value = $this->getPropertyValue($embracingNode->getLeafObject());
 
         /** @var ArrayIterator<int,ExceptionMatcher> $matchers */
@@ -61,33 +62,6 @@ final class PropertyExceptionMappingBlueprint implements ExceptionMappingBluepri
         return $propertyNode;
     }
 
-    public function getName(): string
-    {
-        return $this->property->getName();
-    }
-
-    public function getProperty(): ReflectionProperty
-    {
-        return $this->property;
-    }
-
-    /** @return iterable<CatchExceptionMappingBlueprint<Throwable>> */
-    public function getCatchPrints(): iterable
-    {
-        return $this->catchPrints;
-    }
-
-    /** @psalm-suppress UnusedForeachValue */
-    public function hasCatchPrints(): bool
-    {
-        /** @noinspection PhpLoopNeverIteratesInspection */
-        foreach ($this->catchPrints as $catchPrint) {
-            return true;
-        }
-
-        return false;
-    }
-
     private function getPropertyValue(object $object): mixed
     {
         if (!$this->property->isInitialized($object)) {
@@ -99,7 +73,7 @@ final class PropertyExceptionMappingBlueprint implements ExceptionMappingBluepri
 
     private function catchAttributesMatcher(PropertyExceptionMappingNode $property): ?ExceptionMatcherAggregate
     {
-        if (!$this->hasCatchPrints()) {
+        if ((new IsEmptyIterable($this->catchPrints))()) {
             return null;
         }
 

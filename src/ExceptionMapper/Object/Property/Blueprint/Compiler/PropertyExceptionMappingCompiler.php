@@ -15,6 +15,7 @@ use PhPhD\ExceptionMapper\Object\Property\Blueprint\PropertyExceptionMappingBlue
 use PhPhD\ExceptionMapper\Object\Property\Catch_;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Object\Property\Type\PropertyType;
+use PhPhD\ExceptionMapper\Util\Iterator\IsEmptyIterable;
 use PhPhD\ExceptionMapper\Util\Iterator\MemoizingIteratorAggregate;
 use Psr\Log\LoggerInterface;
 use ReflectionAttribute;
@@ -54,10 +55,10 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
     {
         $this->except(function (ReflectionProperty $property) use ($blueprint): void {
             /** @psalm-suppress TooManyArguments */
-            foreach ($blueprint->getCatchPrints() as $catchPrint) {
+            foreach ($blueprint->catchPrints as $catchPrint) {
                 $this->catchCompiler->forceFullCompilation($catchPrint, $property); // @phpstan-ignore arguments.count
             }
-        }, $blueprint->getProperty());
+        }, $blueprint->property);
     }
 
     private function doCompile(ReflectionProperty $property): ?PropertyExceptionMappingBlueprint
@@ -66,7 +67,7 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
 
         $propertyPrint = new PropertyExceptionMappingBlueprint($property, $catchPrints, $this->printRegistry);
 
-        if (!$propertyPrint->hasCatchPrints()
+        if ((new IsEmptyIterable($propertyPrint->catchPrints))()
             && !$this->propertyType($property)->takes(self::possiblyExceptionMappedType())) {
             return null;
         }

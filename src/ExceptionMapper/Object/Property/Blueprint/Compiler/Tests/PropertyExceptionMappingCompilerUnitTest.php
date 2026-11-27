@@ -17,6 +17,7 @@ use ReflectionProperty;
 
 /**
  * @covers \PhPhD\ExceptionMapper\Object\Property\Blueprint\Compiler\PropertyExceptionMappingCompiler
+ * @covers \PhPhD\ExceptionMapper\Util\Iterator\IsEmptyIterable
  * @covers \PhPhD\ExceptionMapper\Object\Property\Blueprint\Compiler\Type\PossiblyExceptionMappedType
  * @covers \PhPhD\ExceptionMapper\Object\Property\Type\PropertyType
  * @covers \PhPhD\ExceptionMapper\Object\Property\Type\Specification\AnyType
@@ -165,7 +166,7 @@ final class PropertyExceptionMappingCompilerUnitTest extends TestCase
         );
         self::assertSame(
             $property,
-            $blueprint->getProperty(),
+            $blueprint->property,
             ProbeSet::referenceOf($property).' blueprint must reference the very probed property.',
         );
     }
