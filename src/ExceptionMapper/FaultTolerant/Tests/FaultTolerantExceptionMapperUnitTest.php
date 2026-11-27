@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionMapper\FaultTolerant\Tests;
 
 use LogicException;
-use PhPhD\ExceptionMapper\Blueprint\Compiler\Log\SpyLogger;
 use PhPhD\ExceptionMapper\ExceptionMapper;
 use PhPhD\ExceptionMapper\FaultTolerant\FaultTolerantExceptionMapper;
+use PhPhD\ExceptionMapper\Util\Log\SpyLogger;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;

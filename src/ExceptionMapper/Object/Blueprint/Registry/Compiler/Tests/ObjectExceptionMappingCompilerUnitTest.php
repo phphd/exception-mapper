@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionMapper\Object\Blueprint\Registry\Compiler\Tests;
 
 use PhPhD\ExceptionMapper\Blueprint\Compiler\ExceptionMappingCompiler;
-use PhPhD\ExceptionMapper\Blueprint\Compiler\Log\SpyLogger;
 use PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\Connector\Symfony\Tests\PublicServiceCompilerPass;
 use PhPhD\ExceptionMapper\Linter\Tests\Stub\TryWithNoCatchAttributesMessage;
 use PhPhD\ExceptionMapper\Object\Blueprint\ObjectExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Object\Blueprint\Registry\Compiler\Exception\ObjectExceptionMappingPrintCompilationFailedException;
+use PhPhD\ExceptionMapper\Util\Log\SpyLogger;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 use ReflectionClass;

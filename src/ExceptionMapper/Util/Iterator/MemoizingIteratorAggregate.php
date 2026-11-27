@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Composite;
+namespace PhPhD\ExceptionMapper\Util\Iterator;
 
 use CachingIterator;
 use Iterator;

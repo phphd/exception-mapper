@@ -14,8 +14,8 @@ use PhPhD\ExceptionMapper\Object\Property\Blueprint\Compiler\Type\PossiblyExcept
 use PhPhD\ExceptionMapper\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Object\Property\Catch_;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint;
-use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Composite\MemoizingIteratorAggregate;
 use PhPhD\ExceptionMapper\Object\Property\Type\PropertyType;
+use PhPhD\ExceptionMapper\Util\Iterator\MemoizingIteratorAggregate;
 use Psr\Log\LoggerInterface;
 use ReflectionAttribute;
 use ReflectionProperty;

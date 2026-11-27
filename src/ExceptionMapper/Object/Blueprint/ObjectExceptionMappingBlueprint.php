@@ -10,7 +10,7 @@ use PhPhD\ExceptionMapper\Blueprint\ExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\ExceptionMappingNode;
 use PhPhD\ExceptionMapper\Object\ObjectExceptionMappingNode;
 use PhPhD\ExceptionMapper\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
-use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Composite\MemoizingIteratorAggregate;
+use PhPhD\ExceptionMapper\Util\Iterator\MemoizingIteratorAggregate;
 use Webmozart\Assert\Assert;
 
 /**

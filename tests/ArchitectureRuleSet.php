@@ -27,7 +27,6 @@ use PhPhD\ExceptionMapper\Object\Property\Catch_\Blueprint\Compiler\Autoload\Con
 use PhPhD\ExceptionMapper\Object\Property\Catch_\CatchExceptionMappingNode;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Blueprint\MatchConditionBlueprint;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Blueprint\MatchConditionCompiler;
-use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Composite\MemoizingIteratorAggregate;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\MatchCondition;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Qualified\Value\ValueException;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\ExceptionMatch;
@@ -37,6 +36,7 @@ use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\Qualified\Regis
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Formatter\Qualified\Registry\ExceptionMatchFormatterServiceDefinition;
 use PhPhD\ExceptionMapper\Object\Property\Path\PropertyPath;
 use PhPhD\ExceptionMapper\Object\Try_;
+use PhPhD\ExceptionMapper\Util\Log\SpyLogger;
 use PhPhD\ExceptionToolkit\Unwrapper\ExceptionUnwrapper;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -197,7 +197,7 @@ final class ArchitectureRuleSet
     {
         return Selector::AnyOf(
             Selector::classname(Assert::class),
-            Selector::classname(MemoizingIteratorAggregate::class),
+            Selector::inNamespace('PhPhD\ExceptionMapper\Util\Iterator'),
         );
     }
 
@@ -231,6 +231,7 @@ final class ArchitectureRuleSet
             'linter' => [
                 'deps' => [
                     $this->compiler(),
+                    Selector::classname(SpyLogger::class),
                     $this->blueprint(),
                     $this->matchConditionBlueprint(),
                     $this->matchCondition(),

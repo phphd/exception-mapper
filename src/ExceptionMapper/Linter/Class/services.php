@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionMapper\Linter;
 
 use PhPhD\ExceptionMapper\Blueprint\Compiler\ExceptionMappingCompiler;
-use PhPhD\ExceptionMapper\Blueprint\Compiler\Log\SpyLogger;
 use PhPhD\ExceptionMapper\Linter\Class\ClassMappingLinter;
 use PhPhD\ExceptionMapper\Linter\Class\CompilationDefectCollector;
 use PhPhD\ExceptionMapper\Linter\Report\LintReport;
 use PhPhD\ExceptionMapper\Object\Blueprint\ObjectExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Object\Blueprint\Registry\Compiler\CompilingObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionMapper\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
+use PhPhD\ExceptionMapper\Util\Log\SpyLogger;
 use ReflectionClass;
 use ReflectionProperty;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;

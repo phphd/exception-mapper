@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionMapper\Linter\Class;
 
 use PhPhD\ExceptionMapper\Blueprint\Compiler\ExceptionMappingPrintCompilationFailedException;
-use PhPhD\ExceptionMapper\Blueprint\Compiler\Log\SpyLogger;
 use PhPhD\ExceptionMapper\Linter\Report\Defect\Location\DefectLocation;
 use PhPhD\ExceptionMapper\Linter\Report\Defect\MappingDefect;
+use PhPhD\ExceptionMapper\Util\Log\SpyLogger;
 
 use function array_column;
 use function array_filter;
