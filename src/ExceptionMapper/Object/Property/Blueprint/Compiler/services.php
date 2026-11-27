@@ -6,7 +6,6 @@ namespace PhPhD\ExceptionMapper\Object\Property\Blueprint\Compiler;
 
 use Closure;
 use PhPhD\ExceptionMapper\Blueprint\Compiler\ExceptionMappingCompiler;
-use PhPhD\ExceptionMapper\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionMapper\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Object\Property\Catch_;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint;
@@ -29,20 +28,8 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
             PropertyExceptionMappingCompiler::class,
         )->args([
             service(ExceptionMappingCompiler::class.'<'.ReflectionAttribute::class.'<'.Catch_::class.'>,'.CatchExceptionMappingBlueprint::class.'>'),
-            // #[Autowire(lazy: ObjectExceptionMappingBlueprintRegistry::class)]
-            service(PropertyExceptionMappingCompiler::class.'::$printRegistry'),
         ])
         // Better when lazy, since ObjectExceptionMappingCompiler doesn't always reach it.
         ->lazy($hintLazy(ExceptionMappingCompiler::class))
-    ;
-
-    // Making the property lazy, lest it creates a circular reference:
-    $services
-        ->set(
-            PropertyExceptionMappingCompiler::class.'::$printRegistry',
-            ObjectExceptionMappingBlueprintRegistry::class,
-        )->lazy()
-        ->factory('current')
-        ->args([[service(ObjectExceptionMappingBlueprintRegistry::class)]])
     ;
 };

@@ -8,13 +8,10 @@ use Closure;
 use Generator;
 use PhPhD\ExceptionMapper\Blueprint\Compiler\ExceptionMappingCompiler;
 use PhPhD\ExceptionMapper\Blueprint\ExceptionMappingBlueprint;
-use PhPhD\ExceptionMapper\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionMapper\Object\Property\Blueprint\Compiler\Exception\PropertyExceptionMappingPrintCompilationFailedException;
-use PhPhD\ExceptionMapper\Object\Property\Blueprint\Compiler\Type\PossiblyExceptionMappedType;
 use PhPhD\ExceptionMapper\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Object\Property\Catch_;
 use PhPhD\ExceptionMapper\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint;
-use PhPhD\ExceptionMapper\Object\Property\Type\PropertyType;
 use PhPhD\ExceptionMapper\Util\Iterator\IsEmptyIterable;
 use PhPhD\ExceptionMapper\Util\Iterator\MemoizingIteratorAggregate;
 use Psr\Log\LoggerInterface;
@@ -33,15 +30,13 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
     public function __construct(
         /** @var ExceptionMappingCompiler<ReflectionAttribute<Catch_<Throwable,Throwable>>,CatchExceptionMappingBlueprint<Throwable>> */
         private readonly ExceptionMappingCompiler $catchCompiler,
-        /** @var ObjectExceptionMappingBlueprintRegistry<object> */
-        private readonly ObjectExceptionMappingBlueprintRegistry $printRegistry,
         private readonly ?LoggerInterface $errorReporter = null,
     ) {
     }
 
     public function reportingTo(LoggerInterface $reporter): self
     {
-        return new self($this->catchCompiler->reportingTo($reporter), $this->printRegistry, $reporter);
+        return new self($this->catchCompiler->reportingTo($reporter), $reporter);
     }
 
     /** @param ReflectionProperty $reflector */
@@ -65,10 +60,9 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
     {
         $catchPrints = new MemoizingIteratorAggregate($this->compileCatchPrints($property));
 
-        $propertyPrint = new PropertyExceptionMappingBlueprint($property, $catchPrints, $this->printRegistry);
+        $propertyPrint = new PropertyExceptionMappingBlueprint($property, $catchPrints);
 
-        if ((new IsEmptyIterable($propertyPrint->catchPrints))()
-            && !$this->propertyType($property)->takes(self::possiblyExceptionMappedType())) {
+        if ((new IsEmptyIterable($propertyPrint->catchPrints))()) {
             return null;
         }
 
@@ -89,11 +83,6 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
                 yield $catchPrint;
             }
         }
-    }
-
-    private function propertyType(ReflectionProperty $property): PropertyType
-    {
-        return new PropertyType($property->getType());
     }
 
     /**
@@ -119,13 +108,5 @@ final class PropertyExceptionMappingCompiler implements ExceptionMappingCompiler
 
             throw $e;
         }
-    }
-
-    private static function possiblyExceptionMappedType(): PossiblyExceptionMappedType
-    {
-        static $possiblyExceptionMappedType = new PossiblyExceptionMappedType();
-
-        /** @phpstan-var PossiblyExceptionMappedType */
-        return $possiblyExceptionMappedType;
     }
 }

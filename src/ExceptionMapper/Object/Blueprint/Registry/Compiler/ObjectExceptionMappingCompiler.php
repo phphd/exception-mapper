@@ -12,6 +12,7 @@ use PhPhD\ExceptionMapper\Blueprint\ExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Object\Blueprint\ObjectExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Object\Blueprint\Registry\Compiler\Exception\ObjectExceptionMappingPrintCompilationFailedException;
 use PhPhD\ExceptionMapper\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
+use PhPhD\ExceptionMapper\Object\Property\Cascade\Blueprint\CascadePropertyExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Object\Try_;
 use PhPhD\ExceptionMapper\Util\Iterator\IsEmptyIterable;
 use PhPhD\ExceptionMapper\Util\Iterator\MemoizingIteratorAggregate;
@@ -31,6 +32,8 @@ final class ObjectExceptionMappingCompiler implements ExceptionMappingCompiler
     public function __construct(
         /** @var ExceptionMappingCompiler<ReflectionProperty,PropertyExceptionMappingBlueprint> */
         private readonly ExceptionMappingCompiler $propertyCompiler,
+        /** @var ExceptionMappingCompiler<ReflectionProperty,CascadePropertyExceptionMappingBlueprint> */
+        private readonly ExceptionMappingCompiler $cascadePropertyCompiler,
         private readonly ?LoggerInterface $errorReporter = null,
     ) {
     }
@@ -43,7 +46,11 @@ final class ObjectExceptionMappingCompiler implements ExceptionMappingCompiler
 
     public function reportingTo(LoggerInterface $reporter): self
     {
-        return new self($this->propertyCompiler->reportingTo($reporter), $reporter);
+        return new self(
+            $this->propertyCompiler->reportingTo($reporter),
+            $this->cascadePropertyCompiler->reportingTo($reporter),
+            $reporter,
+        );
     }
 
     /** @param ReflectionClass<object> $reflector */
@@ -59,6 +66,11 @@ final class ObjectExceptionMappingCompiler implements ExceptionMappingCompiler
             function () use ($blueprint): void {
                 foreach ($blueprint->propertyPrints as $propertyPrint) {
                     $this->propertyCompiler->forceFullCompilation($propertyPrint);
+                }
+
+                // Iterating compiles every cascade print, so that broken ones get reported
+                foreach ($blueprint->cascadePropertyPrints as $cascadePrint) {
+                    $this->cascadePropertyCompiler->forceFullCompilation($cascadePrint);
                 }
             },
             new ReflectionClass($blueprint->className),
@@ -83,11 +95,12 @@ final class ObjectExceptionMappingCompiler implements ExceptionMappingCompiler
         $objectPrint = new ObjectExceptionMappingBlueprint(
             $reflectionClass->getName(),
             new MemoizingIteratorAggregate($this->compilePropertyPrints($reflectionClass)),
+            new MemoizingIteratorAggregate($this->compileCascadePropertyPrints($reflectionClass)),
         );
 
         /** @noinspection PhpConditionAlreadyCheckedInspection */
-        if ((new IsEmptyIterable($objectPrint->propertyPrints))()) {
-            throw new LogicException('#[Try_] class does not define any #[Catch_] mappings and no nested matchable properties, so it never matches anything.');
+        if ((new IsEmptyIterable($objectPrint->propertyPrints))() && (new IsEmptyIterable($objectPrint->cascadePropertyPrints))()) {
+            throw new LogicException('#[Try_] class does not define any #[Catch_] mappings and no cascade matchable properties, so it never matches.');
         }
 
         return $objectPrint;
@@ -96,13 +109,27 @@ final class ObjectExceptionMappingCompiler implements ExceptionMappingCompiler
     /**
      * @param ReflectionClass<object> $reflectionClass
      *
-     * @return Generator<PropertyExceptionMappingBlueprint>
+     * @return Generator<int,PropertyExceptionMappingBlueprint>
      */
     private function compilePropertyPrints(ReflectionClass $reflectionClass): Generator
     {
         foreach ($reflectionClass->getProperties() as $reflectionProperty) {
             if (null !== $propertyPrint = $this->propertyCompiler->compile($reflectionProperty)) {
                 yield $propertyPrint;
+            }
+        }
+    }
+
+    /**
+     * @param ReflectionClass<object> $reflectionClass
+     *
+     * @return Generator<int,CascadePropertyExceptionMappingBlueprint>
+     */
+    private function compileCascadePropertyPrints(ReflectionClass $reflectionClass): Generator
+    {
+        foreach ($reflectionClass->getProperties() as $reflectionProperty) {
+            if (null !== $cascadePropertyPrint = $this->cascadePropertyCompiler->compile($reflectionProperty)) {
+                yield $cascadePropertyPrint;
             }
         }
     }

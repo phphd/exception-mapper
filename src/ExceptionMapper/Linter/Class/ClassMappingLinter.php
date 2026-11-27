@@ -16,7 +16,6 @@ use PhPhD\ExceptionMapper\Object\Blueprint\Registry\Compiler\ObjectExceptionMapp
 use PhPhD\ExceptionMapper\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionMapper\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Object\Property\Catch_;
-use PhPhD\ExceptionMapper\Util\Iterator\IsEmptyIterable;
 use ReflectionClass;
 use ReflectionProperty;
 
@@ -128,22 +127,18 @@ final class ClassMappingLinter implements MappingLinter
      */
     private function possiblyMissingTryAttribute(ReflectionClass $reflectionClass): array
     {
-        // The class print is null, but it might be so due to a missing #[Try_] attribute
+        // The class does not compile, but it might be so due to a missing #[Try_] attribute
         $missingTryDefects = [];
 
         foreach ($reflectionClass->getProperties() as $property) {
-            $propertyPrint = $this->propertyCompiler->compile($property);
-
-            if (null === $propertyPrint || (new IsEmptyIterable($propertyPrint->catchPrints))()) {
-                continue;
+            if (null !== $this->propertyCompiler->compile($property)) {
+                // If class's property has a catch print,
+                // but the class itself has no print, that's a defect
+                $missingTryDefects[] = MappingDefect::warning(
+                    'Properties declare #[Catch_] mappings, but the class is not marked with #[Try_] attribute, so it never matches.',
+                    DefectLocation::atProperty($property),
+                );
             }
-
-            // If class's property has a catch print,
-            // but the class itself has no print, that's a defect
-            $missingTryDefects[] = MappingDefect::warning(
-                'Properties declare #[Catch_] mappings, but the class is not marked with #[Try_], so it never matches anything.',
-                DefectLocation::atProperty($property),
-            );
         }
 
         return $missingTryDefects;

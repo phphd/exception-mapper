@@ -7,9 +7,8 @@ namespace PhPhD\ExceptionMapper\Object\Property\Blueprint\Compiler\Tests;
 use PhPhD\ExceptionMapper\Blueprint\Compiler\ExceptionMappingCompiler;
 use PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\Connector\Symfony\Tests\PublicServiceCompilerPass;
-use PhPhD\ExceptionMapper\Object\Property\Blueprint\Compiler\Tests\Stub\Category\Subcategory;
-use PhPhD\ExceptionMapper\Object\Property\Blueprint\Compiler\Tests\Stub\Order\PlaceOrderCommand;
-use PhPhD\ExceptionMapper\Object\Property\Blueprint\Compiler\Tests\Stub\Order\Shipping\ShippingAddress;
+use PhPhD\ExceptionMapper\Object\Property\Blueprint\Compiler\Tests\Stub\PullRequest\Branch;
+use PhPhD\ExceptionMapper\Object\Property\Blueprint\Compiler\Tests\Stub\PullRequest\OpenPullRequestCommand;
 use PhPhD\ExceptionMapper\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Tests\Probe\ProbeSet;
 use PHPUnit\Framework\TestCase;
@@ -17,22 +16,16 @@ use ReflectionProperty;
 
 /**
  * @covers \PhPhD\ExceptionMapper\Object\Property\Blueprint\Compiler\PropertyExceptionMappingCompiler
+ * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Blueprint\Compiler\CatchExceptionMappingCompiler
  * @covers \PhPhD\ExceptionMapper\Util\Iterator\IsEmptyIterable
- * @covers \PhPhD\ExceptionMapper\Object\Property\Blueprint\Compiler\Type\PossiblyExceptionMappedType
- * @covers \PhPhD\ExceptionMapper\Object\Property\Type\PropertyType
- * @covers \PhPhD\ExceptionMapper\Object\Property\Type\Specification\AnyType
- * @covers \PhPhD\ExceptionMapper\Object\Property\Type\Specification\MixedType
- * @covers \PhPhD\ExceptionMapper\Object\Property\Type\Specification\MixedObjectType
- * @covers \PhPhD\ExceptionMapper\Object\Property\Type\Specification\MixedIterableType
  *
  * @internal
  */
 final class PropertyExceptionMappingCompilerUnitTest extends TestCase
 {
     private const PROBED_CLASSES = [
-        PlaceOrderCommand::class,
-        ShippingAddress::class,
-        Subcategory::class,
+        OpenPullRequestCommand::class,
+        Branch::class,
     ];
 
     /** @var ExceptionMappingCompiler<ReflectionProperty,PropertyExceptionMappingBlueprint> */
@@ -68,96 +61,21 @@ final class PropertyExceptionMappingCompilerUnitTest extends TestCase
         return self::probes()->of(PropertyInclusionRule::CatchAttributedPropertyIsIncluded);
     }
 
-    /**
-     * @dataProvider looselyTypedPropertyDataProvider
-     * @dataProvider iterableTypedPropertyDataProvider
-     * @dataProvider interfaceTypedPropertyDataProvider
-     * @dataProvider nonFinalClassTypedPropertyDataProvider
-     * @dataProvider finalExceptionMappedClassTypedPropertyDataProvider
-     * @dataProvider relativeClassTypedPropertyDataProvider
-     */
-    public function testPossiblyExceptionMappedPropertyIsIncluded(ReflectionProperty $property): void
+    /** @dataProvider nonCatchAttributedPropertyDataProvider */
+    public function testNonCatchAttributedPropertyIsSkipped(ReflectionProperty $property): void
     {
-        $this->assertIsIncluded($property);
+        $this->assertIsSkipped($property);
     }
 
     /** @return iterable<string,array{ReflectionProperty}> */
-    public static function looselyTypedPropertyDataProvider(): iterable
+    public static function nonCatchAttributedPropertyDataProvider(): iterable
     {
-        return self::probes()->of(PropertyInclusionRule::LooselyTypedPropertyIsIncluded);
-    }
-
-    /** @return iterable<string,array{ReflectionProperty}> */
-    public static function iterableTypedPropertyDataProvider(): iterable
-    {
-        return self::probes()->of(PropertyInclusionRule::IterableTypedPropertyIsIncluded);
-    }
-
-    /** @return iterable<string,array{ReflectionProperty}> */
-    public static function interfaceTypedPropertyDataProvider(): iterable
-    {
-        return self::probes()->of(PropertyInclusionRule::InterfaceTypedPropertyIsIncluded);
-    }
-
-    /** @return iterable<string,array{ReflectionProperty}> */
-    public static function nonFinalClassTypedPropertyDataProvider(): iterable
-    {
-        return self::probes()->of(PropertyInclusionRule::NonFinalClassTypedPropertyIsIncluded);
-    }
-
-    /** @return iterable<string,array{ReflectionProperty}> */
-    public static function finalExceptionMappedClassTypedPropertyDataProvider(): iterable
-    {
-        return self::probes()->of(PropertyInclusionRule::FinalExceptionMappedClassTypedPropertyIsIncluded);
-    }
-
-    /** @return iterable<string,array{ReflectionProperty}> */
-    public static function relativeClassTypedPropertyDataProvider(): iterable
-    {
-        return self::probes()->of(PropertyInclusionRule::RelativeClassTypedPropertyIsIncluded);
-    }
-
-    /**
-     * @dataProvider finalNonExceptionMappedClassTypedPropertyDataProvider
-     * @dataProvider scalarTypedPropertyDataProvider
-     * @dataProvider enumTypedPropertyDataProvider
-     * @dataProvider builtInClassTypedPropertyDataProvider
-     */
-    public function testNeverExceptionMappedPropertyIsSkipped(ReflectionProperty $property): void
-    {
-        self::assertNull(
-            $this->compile($property),
-            ProbeSet::referenceOf($property).' must be skipped from the blueprint.',
-        );
-    }
-
-    /** @return iterable<string,array{ReflectionProperty}> */
-    public static function finalNonExceptionMappedClassTypedPropertyDataProvider(): iterable
-    {
-        return self::probes()->of(PropertyInclusionRule::FinalNonExceptionMappedClassTypedPropertyIsSkipped);
-    }
-
-    /** @return iterable<string,array{ReflectionProperty}> */
-    public static function scalarTypedPropertyDataProvider(): iterable
-    {
-        return self::probes()->of(PropertyInclusionRule::ScalarTypedPropertyIsSkipped);
-    }
-
-    /** @return iterable<string,array{ReflectionProperty}> */
-    public static function enumTypedPropertyDataProvider(): iterable
-    {
-        return self::probes()->of(PropertyInclusionRule::EnumTypedPropertyIsSkipped);
-    }
-
-    /** @return iterable<string,array{ReflectionProperty}> */
-    public static function builtInClassTypedPropertyDataProvider(): iterable
-    {
-        return self::probes()->of(PropertyInclusionRule::BuiltInClassTypedPropertyIsSkipped);
+        return self::probes()->of(PropertyInclusionRule::NonCatchAttributedPropertyIsSkipped);
     }
 
     private function assertIsIncluded(ReflectionProperty $property): void
     {
-        $blueprint = $this->compile($property);
+        $blueprint = $this->compiler->compile($property);
 
         self::assertInstanceOf(
             PropertyExceptionMappingBlueprint::class,
@@ -171,13 +89,16 @@ final class PropertyExceptionMappingCompilerUnitTest extends TestCase
         );
     }
 
+    private function assertIsSkipped(ReflectionProperty $property): void
+    {
+        self::assertNull(
+            $this->compiler->compile($property),
+            ProbeSet::referenceOf($property).' must be skipped from the blueprint.',
+        );
+    }
+
     private static function probes(): ProbeSet
     {
         return new ProbeSet(self::PROBED_CLASSES);
-    }
-
-    private function compile(ReflectionProperty $property): ?PropertyExceptionMappingBlueprint
-    {
-        return $this->compiler->compile($property);
     }
 }

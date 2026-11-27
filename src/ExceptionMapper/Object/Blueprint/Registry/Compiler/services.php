@@ -8,6 +8,7 @@ use PhPhD\ExceptionMapper\Blueprint\Compiler\ExceptionMappingCompiler;
 use PhPhD\ExceptionMapper\Connector\Symfony\PhdExceptionMapperExtension;
 use PhPhD\ExceptionMapper\Object\Blueprint\ObjectExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Object\Property\Blueprint\PropertyExceptionMappingBlueprint;
+use PhPhD\ExceptionMapper\Object\Property\Cascade\Blueprint\CascadePropertyExceptionMappingBlueprint;
 use ReflectionClass;
 use ReflectionProperty;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -25,6 +26,7 @@ return static function (ContainerConfigurator $configurator, ContainerBuilder $c
         )
         ->args([
             service(ExceptionMappingCompiler::class.'<'.ReflectionProperty::class.','.PropertyExceptionMappingBlueprint::class.'>'),
+            service(ExceptionMappingCompiler::class.'<'.ReflectionProperty::class.','.CascadePropertyExceptionMappingBlueprint::class.'>'),
         ])
     ;
 

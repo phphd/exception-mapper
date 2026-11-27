@@ -70,9 +70,9 @@ final class LintExceptionMapperConsoleCommandUnitTest extends TestCase
 
         self::assertSame(
             <<<'TXT'
-             ---------------------------------------------------------------------------------------------------------------
+             ----------------------------------------------------------------------------------------------------------------
               src/ExceptionMapper/Linter/Tests/Stub/Invalid/UndefinedConstantConditionMessage.php
-             ---------------------------------------------------------------------------------------------------------------
+             ----------------------------------------------------------------------------------------------------------------
               ✏️	   PhPhD\ExceptionMapper\Linter\Tests\Stub\Invalid\UndefinedConstantConditionMessage::$divisor
               [ERROR]  Undefined constant
                        "PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Undefined\undefined_condition"
@@ -80,11 +80,11 @@ final class LintExceptionMapperConsoleCommandUnitTest extends TestCase
                          ↳ #[Catch_] exception mapping compilation failed.
 
               ✏️	   PhPhD\ExceptionMapper\Linter\Tests\Stub\Invalid\UndefinedConstantConditionMessage
-              [ERROR]  #[Try_] class does not define any #[Catch_] mappings and no nested matchable properties, so it never
-                       matches anything.
+              [ERROR]  #[Try_] class does not define any #[Catch_] mappings and no cascade matchable properties, so it never
+                       matches.
                        ↳ Class exception mapping compilation has failed.
 
-             ---------------------------------------------------------------------------------------------------------------
+             ----------------------------------------------------------------------------------------------------------------
 
 
 

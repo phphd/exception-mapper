@@ -46,7 +46,9 @@ use Symfony\Component\Validator\Exception\ValidationFailedException;
  * @covers \PhPhD\ExceptionMapper\Object\Blueprint\Registry\Compiler\ObjectExceptionMappingCompiler
  * @covers \PhPhD\ExceptionMapper\Object\Blueprint\Registry\Compiler\Exception\ObjectExceptionMappingPrintCompilationFailedException
  * @covers \PhPhD\ExceptionMapper\Object\Property\Blueprint\PropertyExceptionMappingBlueprint
+ * @covers \PhPhD\ExceptionMapper\Object\Property\Cascade\Blueprint\CascadePropertyExceptionMappingBlueprint
  * @covers \PhPhD\ExceptionMapper\Object\Property\Blueprint\Compiler\PropertyExceptionMappingCompiler
+ * @covers \PhPhD\ExceptionMapper\Object\Property\Cascade\Blueprint\Compiler\CascadePropertyExceptionMappingCompiler
  * @covers \PhPhD\ExceptionMapper\Object\Property\Blueprint\Compiler\Exception\PropertyExceptionMappingPrintCompilationFailedException
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Blueprint\Compiler\CatchExceptionMappingCompiler
@@ -94,7 +96,7 @@ final class MappingLinterUnitTest extends TestCase
         self::assertSame(DefectSeverity::Error, $defect->getSeverity());
         self::assertSame(TryWithNoCatchAttributesMessage::class, $defect->getLocation()->toReference());
         self::assertSame([
-            '#[Try_] class does not define any #[Catch_] mappings and no nested matchable properties, so it never matches anything.',
+            '#[Try_] class does not define any #[Catch_] mappings and no cascade matchable properties, so it never matches.',
             'Class exception mapping compilation has failed.',
         ], $defect->getMessages());
     }
@@ -109,7 +111,7 @@ final class MappingLinterUnitTest extends TestCase
         self::assertSame(DefectSeverity::Warning, $defect->getSeverity());
         self::assertSame(MessageWithNoTryAttribute::class.'::$property', $defect->getLocation()->toReference());
         self::assertSame([
-            'Properties declare #[Catch_] mappings, but the class is not marked with #[Try_], so it never matches anything.',
+            'Properties declare #[Catch_] mappings, but the class is not marked with #[Try_] attribute, so it never matches.',
         ], $defect->getMessages());
     }
 
@@ -135,7 +137,7 @@ final class MappingLinterUnitTest extends TestCase
         self::assertSame(DefectSeverity::Error, $defect->getSeverity());
         self::assertSame(TryWithNonMatchableObjectMessage::class, $defect->getLocation()->toReference());
         self::assertSame([
-            '#[Try_] class does not define any #[Catch_] mappings and no nested matchable properties, so it never matches anything.',
+            '#[Try_] class does not define any #[Catch_] mappings and no cascade matchable properties, so it never matches.',
             'Class exception mapping compilation has failed.',
         ], $defect->getMessages());
     }

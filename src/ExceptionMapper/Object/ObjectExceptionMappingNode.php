@@ -16,13 +16,22 @@ final class ObjectExceptionMappingNode implements ExceptionMappingNode
         private readonly object $object,
         private readonly ?ExceptionMappingNode $embracingNode,
         /** @var iterable<ExceptionMatcher> */
-        private readonly iterable $properties,
+        private readonly iterable $catchProperties,
+        /** @var iterable<ExceptionMatcher> */
+        private readonly iterable $cascadeProperties,
     ) {
     }
 
+    /** Own #[Catch_] properties precede over the nested ones */
     public function match(ExceptionReciprocal $reciprocal): bool
     {
-        foreach ($this->properties as $property) {
+        foreach ($this->catchProperties as $property) {
+            if ($property->match($reciprocal)) {
+                return true;
+            }
+        }
+
+        foreach ($this->cascadeProperties as $property) {
             if ($property->match($reciprocal)) {
                 return true;
             }

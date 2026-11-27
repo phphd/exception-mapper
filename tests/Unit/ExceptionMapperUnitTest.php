@@ -41,6 +41,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionMapper\Object\Blueprint\Registry\Compiler\ObjectExceptionMappingCompiler
  * @covers \PhPhD\ExceptionMapper\Object\Blueprint\Registry\Compiler\CompilingObjectExceptionMappingBlueprintRegistry
  * @covers \PhPhD\ExceptionMapper\Object\Property\Blueprint\PropertyExceptionMappingBlueprint
+ * @covers \PhPhD\ExceptionMapper\Object\Property\Cascade\Blueprint\CascadePropertyExceptionMappingBlueprint
  * @covers \PhPhD\ExceptionMapper\Matcher\ExceptionMatcherAggregateAdapter
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\CatchAttributesExceptionMatcherAggregate
