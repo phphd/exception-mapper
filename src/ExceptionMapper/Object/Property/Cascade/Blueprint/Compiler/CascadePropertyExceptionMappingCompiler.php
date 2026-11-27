@@ -11,6 +11,7 @@ use PhPhD\ExceptionMapper\Object\Blueprint\Registry\ObjectExceptionMappingBluepr
 use PhPhD\ExceptionMapper\Object\Property\Blueprint\Compiler\Exception\PropertyExceptionMappingPrintCompilationFailedException;
 use PhPhD\ExceptionMapper\Object\Property\Cascade\Blueprint\CascadePropertyExceptionMappingBlueprint;
 use PhPhD\ExceptionMapper\Object\Property\Cascade\Blueprint\Compiler\Type\PossiblyExceptionMappedType;
+use PhPhD\ExceptionMapper\Object\Property\Cascade\Value\Blueprint\CascadeValueExceptionMatcherBlueprint;
 use PhPhD\ExceptionMapper\Object\Property\Type\PropertyType;
 use Psr\Log\LoggerInterface;
 use ReflectionProperty;
@@ -24,11 +25,14 @@ use Throwable;
  */
 final class CascadePropertyExceptionMappingCompiler implements ExceptionMappingCompiler
 {
+    private readonly CascadeValueExceptionMatcherBlueprint $cascadeValuePrint;
+
     public function __construct(
         /** @var ObjectExceptionMappingBlueprintRegistry<object> */
         private readonly ObjectExceptionMappingBlueprintRegistry $printRegistry,
         private readonly ?LoggerInterface $errorReporter = null,
     ) {
+        $this->cascadeValuePrint = new CascadeValueExceptionMatcherBlueprint($this->printRegistry);
     }
 
     public function reportingTo(LoggerInterface $reporter): self
@@ -57,7 +61,7 @@ final class CascadePropertyExceptionMappingCompiler implements ExceptionMappingC
             return null;
         }
 
-        return new CascadePropertyExceptionMappingBlueprint($property, $this->printRegistry);
+        return new CascadePropertyExceptionMappingBlueprint($property, $this->cascadeValuePrint);
     }
 
     private function propertyType(ReflectionProperty $property): PropertyType
