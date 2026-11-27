@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace PhPhD\ExceptionMapper\Object\Property\Iterable;
 
 use Iterator;
-use PhPhD\ExceptionMapper\Matcher\ExceptionMatcherAggregate;
+use PhPhD\ExceptionMapper\Matcher\ExceptionMatcherIteratorAggregate;
 use PhPhD\ExceptionMapper\Object\Blueprint\Registry\ObjectExceptionMappingBlueprintRegistry;
 use PhPhD\ExceptionMapper\Object\Property\PropertyExceptionMappingNode;
 
 use function is_object;
 
 /** @internal */
-final class IterablePropertyExceptionMatcherAggregate implements ExceptionMatcherAggregate
+final class IterablePropertyExceptionMatcherIteratorAggregate implements ExceptionMatcherIteratorAggregate
 {
     public function __construct(
         private readonly PropertyExceptionMappingNode $property,
@@ -21,7 +21,7 @@ final class IterablePropertyExceptionMatcherAggregate implements ExceptionMatche
     ) {
     }
 
-    public function getExceptionMatchers(): Iterator
+    public function getIterator(): Iterator
     {
         /** @var iterable<array-key,mixed> $value */
         $value = $this->property->getValue();

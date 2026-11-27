@@ -42,9 +42,9 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * @covers \PhPhD\ExceptionMapper\Object\Blueprint\Registry\Compiler\CompilingObjectExceptionMappingBlueprintRegistry
  * @covers \PhPhD\ExceptionMapper\Object\Property\Blueprint\PropertyExceptionMappingBlueprint
  * @covers \PhPhD\ExceptionMapper\Object\Property\Cascade\Blueprint\CascadePropertyExceptionMappingBlueprint
+ * @covers \PhPhD\ExceptionMapper\Blueprint\Matcher\LateBindingExceptionMatcherIteratorAggregate
  * @covers \PhPhD\ExceptionMapper\Matcher\ExceptionMatcherAggregateAdapter
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Blueprint\CatchExceptionMappingBlueprint
- * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\CatchAttributesExceptionMatcherAggregate
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\CatchExceptionMappingNode
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Class\ExceptionClassMatchCondition
  * @covers \PhPhD\ExceptionMapper\Object\Property\Catch_\Match\Condition\Class\ExceptionClassMatchConditionCompiler

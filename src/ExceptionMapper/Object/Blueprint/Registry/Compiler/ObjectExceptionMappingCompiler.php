@@ -64,7 +64,7 @@ final class ObjectExceptionMappingCompiler implements ExceptionMappingCompiler
     {
         $this->except(
             function () use ($blueprint): void {
-                foreach ($blueprint->propertyPrints as $propertyPrint) {
+                foreach ($blueprint->catchPropertyPrints as $propertyPrint) {
                     $this->propertyCompiler->forceFullCompilation($propertyPrint);
                 }
 
@@ -99,7 +99,7 @@ final class ObjectExceptionMappingCompiler implements ExceptionMappingCompiler
         );
 
         /** @noinspection PhpConditionAlreadyCheckedInspection */
-        if ((new IsEmptyIterable($objectPrint->propertyPrints))() && (new IsEmptyIterable($objectPrint->cascadePropertyPrints))()) {
+        if ((new IsEmptyIterable($objectPrint->catchPropertyPrints))() && (new IsEmptyIterable($objectPrint->cascadePropertyPrints))()) {
             throw new LogicException('#[Try_] class does not define any #[Catch_] mappings and no cascade matchable properties, so it never matches.');
         }
 

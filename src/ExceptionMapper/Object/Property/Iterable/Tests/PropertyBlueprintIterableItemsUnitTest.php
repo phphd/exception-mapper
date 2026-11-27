@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @covers \PhPhD\ExceptionMapper\Object\Property\Blueprint\PropertyExceptionMappingBlueprint
  * @covers \PhPhD\ExceptionMapper\Object\Property\Cascade\Blueprint\CascadePropertyExceptionMappingBlueprint
- * @covers \PhPhD\ExceptionMapper\Object\Property\Iterable\IterablePropertyExceptionMatcherAggregate
+ * @covers \PhPhD\ExceptionMapper\Object\Property\Iterable\IterablePropertyExceptionMatcherIteratorAggregate
  * @covers \PhPhD\ExceptionMapper\Object\Property\Iterable\ItemOfIterableExceptionMappingNode
  * @covers \PhPhD\ExceptionMapper\Object\Property\Type\Specification\MixedIterableType
  */

@@ -18,7 +18,7 @@ interface ExceptionMappingBlueprint
     /**
      * @param TEmbracingNode $embracingNode
      *
-     * @return TResultingNode
+     * @return ?TResultingNode
      */
-    public function bind(ExceptionMappingNode $embracingNode): ExceptionMappingNode;
+    public function bind(ExceptionMappingNode $embracingNode): ?ExceptionMappingNode;
 }
